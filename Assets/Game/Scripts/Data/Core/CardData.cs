@@ -10,6 +10,6 @@ namespace Game.Scripts.Data.Core
         public int Health;
         public int Damage;
         public int ManaCost;
-        public List<SkillId> Skills;
+        public List<SkillId> Skills = new List<SkillId>();
     }
 }

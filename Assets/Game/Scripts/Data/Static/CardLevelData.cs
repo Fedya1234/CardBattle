@@ -6,6 +6,6 @@ namespace Game.Scripts.Data.Static
     [Serializable]
     public class CardLevelData
     {
-        CardData[] DataByLevel;
+        public CardData[] DataByLevel;
     }
 }
