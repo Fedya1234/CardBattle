@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Scripts.Data.Visual
 {
-    public class CardVisual
+    public class UnitVisual
     {
         public string Name;
         public string Description;

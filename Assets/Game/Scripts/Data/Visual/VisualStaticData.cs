@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using Game.Scripts.Data.Enums;
-using Game.Scripts.Data.Visual;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Game.Scripts.Data.SO
+namespace Game.Scripts.Data.Visual
 {
     [CreateAssetMenu(menuName = "SO/VisualStaticData", fileName = "VisualStaticData")]
     public class VisualStaticData : SerializedScriptableObject

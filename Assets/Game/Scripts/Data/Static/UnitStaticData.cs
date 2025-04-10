@@ -1,15 +1,14 @@
 using System;
-using System.Collections.Generic;
 using Game.Scripts.Data.Enums;
 
-namespace Game.Scripts.Data.Core
+namespace Game.Scripts.Data.Static
 {
     [Serializable]
-    public class CardData
+    public class UnitStaticData
     {
         public int Health;
         public int Damage;
         public int ManaCost;
-        public List<SkillId> Skills = new List<SkillId>();
+        public SkillId[] Skills;
     }
 }

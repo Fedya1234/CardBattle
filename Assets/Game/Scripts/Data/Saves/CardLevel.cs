@@ -2,8 +2,9 @@ using Game.Scripts.Data.Enums;
 
 namespace Game.Scripts.Data.Saves
 {
-    public class CardSave : CardLevel
+    public class CardLevel
     {
-        public int Count;
+        public CardId Id;
+        public int Level;
     }
 }
