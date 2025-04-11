@@ -7,6 +7,7 @@ namespace Game.Scripts.Data.Saves
     public class PlayerSave
     {
         public int Health;
+        public int Mana;
         public int Level;
         public List<CardSave> Cards;
     }

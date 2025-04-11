@@ -12,11 +12,11 @@ namespace Game.Scripts.Data.Core.State
         public PlayerCardsState Cards;
         public HeroState Hero;
 
-        public PlayerState(List<CardLevel> deck)
+        public PlayerState(PlayerSave playerSave)
         {
+            Cards = new PlayerCardsState(playerSave);
             Board = new BoardState();
-            Cards = new PlayerCardsState(deck);
-            Hero = new HeroState();
+            Hero = new HeroState(playerSave);
         }
 
         public void ApplyChanges(PlayerMove changes)

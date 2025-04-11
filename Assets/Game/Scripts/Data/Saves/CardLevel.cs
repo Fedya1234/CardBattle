@@ -11,5 +11,11 @@ namespace Game.Scripts.Data.Saves
         {
             return Id == other.Id && Level == other.Level;
         }
+        
+        public CardLevel(CardId id, int level)
+        {
+            Id = id;
+            Level = level;
+        }
     }
 }

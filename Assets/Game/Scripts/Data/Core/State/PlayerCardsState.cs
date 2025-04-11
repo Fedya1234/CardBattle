@@ -12,9 +12,10 @@ namespace Game.Scripts.Data.Core.State
         public List<CardLevel> HandCards;
         public List<CardLevel> Discard;
         
-        public PlayerCardsState(List<CardLevel> deck)
+
+        public PlayerCardsState(PlayerSave save)
         {
-            Deck = deck;
+            Deck = GetCards(save);
             HandCards = new List<CardLevel>();
             Discard = new List<CardLevel>();
         }
@@ -24,6 +25,18 @@ namespace Game.Scripts.Data.Core.State
             Deck = deck;
             HandCards = handCards;
             Discard = discard;
+        }
+
+        public List<CardLevel> GetCardsFromDeck(int count)
+        {
+            var cards = Deck.Take(count).ToList();
+            Deck.RemoveRange(0, count);
+            return cards;
+        }
+
+        public void AddCardsToDeck(List<CardLevel> cards)
+        {
+            Deck.AddRange(cards);
         }
 
         public void ApplyChanges(PlayerMove changes)
@@ -54,6 +67,19 @@ namespace Game.Scripts.Data.Core.State
         private CardLevel HandCard(CardLevel card)
         {
             return HandCards.FirstOrDefault(handCard => handCard.Equals(card));
+        }
+        
+        private List<CardLevel> GetCards(PlayerSave save)
+        {
+            var cards = new List<CardLevel>();
+            foreach (var cardSave in save.Cards)
+            {
+                for (int i = 0; i < cardSave.Count; i++)
+                {
+                    cards.Add(new CardLevel(cardSave.Id, cardSave.Level));
+                }
+            }
+            return cards;
         }
     }
 }
