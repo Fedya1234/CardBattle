@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.Scripts.Data.Core;
+using Game.Scripts.Data.Core.Units;
 using Game.Scripts.Data.Enums;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -12,21 +13,11 @@ namespace Game.Scripts.Data.Static
     {
         [SerializeField] private Dictionary<UnitId, UnitStaticLevelData> _units;
         [SerializeField] private int[] _playerHealthByLevel;
-        
-        public UnitStaticLevelData GetUnitLevelData(UnitId unitId)
-        {
-            if (_units.ContainsKey(unitId) == false)
-            {
-                Debug.LogError($"CardLevelData not found for {unitId}");
-                return new UnitStaticLevelData();
-            }
-            return _units[unitId];
-        }
 
-        public UnitStaticData GetUnitStaticData(UnitId unitId, int level)
+        public UnitStaticData GetUnitStaticData(UnitData data)
         {
-            var cardLevelData = GetUnitLevelData(unitId);
-            return cardLevelData.GetDataByLevel(level);
+            var cardLevelData = GetUnitLevelData(data.Id);
+            return cardLevelData.GetDataByLevel(data.Level);
         }
 
         public int PlayerHealth(int level)
@@ -44,6 +35,16 @@ namespace Game.Scripts.Data.Static
             }
 
             return _playerHealthByLevel[level];
+        }
+
+        private UnitStaticLevelData GetUnitLevelData(UnitId unitId)
+        {
+            if (_units.ContainsKey(unitId) == false)
+            {
+                Debug.LogError($"CardLevelData not found for {unitId}");
+                return new UnitStaticLevelData();
+            }
+            return _units[unitId];
         }
     }
 }

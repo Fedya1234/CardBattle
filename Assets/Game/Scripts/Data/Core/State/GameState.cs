@@ -1,7 +1,6 @@
 using System;
-using UnityEngine.Serialization;
 
-namespace Game.Scripts.Data.Core
+namespace Game.Scripts.Data.Core.State
 {
     [Serializable]
     public class GameState
@@ -10,22 +9,17 @@ namespace Game.Scripts.Data.Core
         
         public PlayerState[] Players;
         public int Round;
-        public int PlayersTurn;
         public int MyIndex;
-
-        public bool IsMyTurn => PlayersTurn == MyIndex;
-        public bool IsOpponentTurn => PlayersTurn != MyIndex;
-
+        public int OpponentIndex => MyIndex == 0 ? 1 : 0;
 
         public PlayerState GetMyState() => Players[MyIndex];
-        public PlayerState GetOpponentState() => Players[MyIndex == 0 ? 1 : 0];
+        public PlayerState GetOpponentState() => Players[OpponentIndex];
 
 
         public GameState()
         {
             Players = new PlayerState[MAX_PLAYERS];
             Round = 0;
-            PlayersTurn = 0;
         }
 
         public void Init(PlayerState[] players, int myTurnIndex)

@@ -8,7 +8,6 @@ namespace Game.Scripts.Data.Static
     {
         public int Health;
         public int Damage;
-        public int ManaCost;
         public SkillId[] Skills;
     }
 }

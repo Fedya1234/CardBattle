@@ -3,32 +3,38 @@ using System.Collections.Generic;
 using Game.Scripts.Data.Enums;
 using Game.Scripts.Data.Static;
 
-namespace Game.Scripts.Data.Core
+namespace Game.Scripts.Data.Core.State
 {
     [Serializable]
-    public class UnitData
+    public class UnitState
     {
-        public event Action<UnitData> EventDataChanged;
+        public event Action<UnitState> EventDataChanged;
         
         public int Health;
         public int Damage;
-        public int ManaCost;
         public List<SkillId> Skills = new List<SkillId>();
         
-        public UnitData(UnitStaticData staticData)
-        {
-            Health = staticData.Health;
-            Damage = staticData.Damage;
-            ManaCost = staticData.ManaCost;
-            Skills = new List<SkillId>(staticData.Skills);
-        }
+        private UnitStaticData _staticData;
         
-        public UnitData(UnitData unitData)
+        public UnitState(UnitStaticData staticData)
         {
-            Health = unitData.Health;
-            Damage = unitData.Damage;
-            ManaCost = unitData.ManaCost;
-            Skills = new List<SkillId>(unitData.Skills);
+            _staticData = staticData;
+            Reset();
+        }
+
+        public void Reset()
+        {
+            Health = _staticData.Health;
+            Damage = _staticData.Damage;
+            Skills = new List<SkillId>(_staticData.Skills);
+            
+            EventDataChanged?.Invoke(this);
+        }
+        public UnitState(UnitState unitState)
+        {
+            Health = unitState.Health;
+            Damage = unitState.Damage;
+            Skills = new List<SkillId>(unitState.Skills);
         }
         
         public void AddHealth(int health)
@@ -51,14 +57,6 @@ namespace Game.Scripts.Data.Core
             EventDataChanged?.Invoke(this);
         }
         
-        public void SetManaCost(int manaCost)
-        {
-            ManaCost = manaCost;
-            if (ManaCost < 0) 
-                ManaCost = 0;
-            
-            EventDataChanged?.Invoke(this);
-        }
         
         public void AddSkill(SkillId skillId)
         {

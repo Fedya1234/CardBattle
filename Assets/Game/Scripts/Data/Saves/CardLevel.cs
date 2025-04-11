@@ -6,5 +6,10 @@ namespace Game.Scripts.Data.Saves
     {
         public CardId Id;
         public int Level;
+        
+        public bool Equals(CardLevel other)
+        {
+            return Id == other.Id && Level == other.Level;
+        }
     }
 }
