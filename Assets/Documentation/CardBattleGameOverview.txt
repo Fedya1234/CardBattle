@@ -1,0 +1,88 @@
+AI Coding Assistant Prompt: Card Battler Game Overview
+We are building a card battler game (similar to Hearthstone in structure), using a data-driven architecture in Unity. The game should be developed in a way that supports both single-player and easy future expansion to multiplayer, and is independent of graphics for now.
+
+Core Concepts
+Each player has a 3x3 battlefield grid (9 cells total). Cards can be placed into these cells.
+
+There are only 2 types of cards:
+
+Unit cards – place a unit on the battlefield.
+
+Spell cards – cast buffs on your own units or debuffs on enemy units.
+
+Players take turns simultaneously:
+
+Each round, both players play cards and press “End Turn”.
+
+Then, a shared resolution phase begins, where effects and combat play out.
+
+Players see the opponent’s actions only after both have ended their turn.
+
+Card Mechanics
+Each turn starts with a draft phase: 4 cards are shown for 20 seconds.
+
+Players can replace any number of these cards.
+
+Replaced cards return to the deck.
+
+Each player has a deck of 30 cards. No reshuffling if the deck is empty.
+
+Players can burn one card per turn to gain +1 mana.
+
+Battle Phase
+Battle resolution happens in this order:
+
+Positive spell effects (buffs, heals)
+
+Negative spell effects (damage, debuffs)
+
+Passive abilities that trigger "At start of turn"
+
+Combat phase – units fight
+
+Units attack only enemies in the same horizontal row:
+
+Front → Middle → Back row.
+
+If all enemy cells in that row are empty → damage is dealt to the enemy hero.
+
+If the hero reaches 0 HP → that player loses.
+
+Abilities & Triggers
+Card effects may trigger:
+
+When played
+
+On unit death
+
+On hero taking damage
+
+When touching other units (adjacent cells)
+
+If more/fewer units than the opponent
+
+Based on mana or hand size
+
+At start/end of turn
+
+If placed in front or back rows
+
+Unit Properties (Passive)
+Some unit cards or spell buffs grant:
+
+Double strike
+
+Vampirism
+
+Anti-magic
+
+First strike
+
+Armor
+
+Mana System
+Turn 1 starts with 2 mana.
+
++1 mana per turn (up to max 9).
+
+Hero abilities cost mana (or may be free), and each hero has a unique skill.

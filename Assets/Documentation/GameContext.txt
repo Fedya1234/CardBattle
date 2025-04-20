@@ -1,0 +1,211 @@
+# Card Battle Game Development Context
+
+## Project Overview
+- Unity card battler game (similar to Hearthstone)
+- Uses C# with UniTask for async operations
+- Early prototype stage with core architecture in place
+- 3x3 grid-based gameplay
+- Turn-based card mechanics
+
+### Directory Structure
+Assets/
+├── Game/
+│   ├── Materials/
+│   ├── Models/
+│   ├── Prefabs/
+│   ├── Scripts/
+│   │   ├── Core/           # Core gameplay and controllers
+│   │   ├── Data/           # Data structures and models
+│   │   ├── Helpers/        # Utility and helper classes
+│   │   └── UI/             # User interface components
+│   ├── SO/                 # ScriptableObjects for game configuration
+│   └── Textures/
+├── Input/                  # Input handling
+├── Plugins/                # Third-party libraries
+├── Resources/              # Runtime loadable assets
+├── Scenes/                 # Unity scenes
+└── Settings/               # Project settings
+
+### Key Files and Classes
+
+#### Core Architecture
+- `GameInitializer.cs` (Assets/Game/Scripts/Core/GameInitializer.cs)
+  - Entry point for game startup
+  - Creates GameSession after finding opponent
+  - Path for expansion: Implement proper save loading
+
+- `GameSession.cs` (Assets/Game/Scripts/Core/GameSession.cs)
+  - Manages game state and flow
+  - Handles turn progression
+  - Coordinates player and bot moves
+  - Path for expansion: Complete OnPlayerMove and OnPlayerCardsChosen implementations
+
+- `OpponentFinder.cs` (Assets/Game/Scripts/Core/OpponentFinder.cs)
+  - Currently has placeholder implementation
+  - Path for expansion: Implement actual matchmaking or AI opponent selection logic
+
+- `BattleResolver.cs` (Assets/Game/Scripts/Core/BattleResolver.cs)
+  - Handles complete battle resolution
+  - Processes card placements and effects
+  - Executes battle phases (positive effects, negative effects, passive abilities, combat)
+  - Checks for win conditions
+  - Analyzes game state advantage for AI decision making
+
+#### Move Controllers (Assets/Game/Scripts/Core/MoveControllers/)
+- `BaseMoveController.cs` - Abstract base class with common interface
+- `PlayerMoveController.cs` - Human player controls (partially implemented)
+- `BotMoveController.cs` - AI opponent controls (partially implemented)
+- `TestMoveController.cs` - Testing implementation with random selection
+
+#### State Management (Assets/Game/Scripts/Data/Core/State/)
+- `GameState.cs` - Top-level game state container
+- `PlayerState.cs` - Individual player state
+- `BoardState.cs` - 3x3 grid representation
+- `PlayerCardsState.cs` - Card collection management
+- `HeroState.cs` - Player health and mana (simplified without MaxHealth/MaxMana)
+- `UnitState.cs` - Unit health, damage, and skills
+
+#### Card System (Assets/Game/Scripts/Data/)
+- `CardLevel.cs` (Assets/Game/Scripts/Data/Saves/CardLevel.cs) - Basic card representation
+- `CardSave.cs` (Assets/Game/Scripts/Data/Saves/CardSave.cs) - Card with quantity for collections
+- `CardMove.cs` (Assets/Game/Scripts/Data/Core/Move/CardMove.cs) - Card placement on board
+- `PlayerMove.cs` (Assets/Game/Scripts/Data/Core/Move/PlayerMove.cs) - Collection of card moves
+
+#### Board System
+- `GameBoardPlace.cs` (Assets/Game/Scripts/Data/Core/GameBoardPlace.cs) - Single board position
+  - Handles unit placement, death, and revival
+  - Manages place markings
+
+#### Card Effect System (Assets/Game/Scripts/Data/Core/Effects/)
+- `BaseCardEffect.cs` - Abstract base class for all effects
+- `ICardEffect.cs` - Interface defining effect contract
+- `CardEffectFactory.cs` - Creates appropriate effects based on card type
+- Specific Effects:
+  - `AntiMagicEffect.cs` - Protection against magic
+  - `ArmorEffect.cs` - Damage reduction
+  - `CombatEffect.cs` - Unit combat resolution
+  - `DamageEffect.cs` - Direct damage
+  - `DoubleDamageEffect.cs` - Damage multiplier
+  - `EndTurnHealEffect.cs` - End of turn healing
+  - `FirstStrikeEffect.cs` - Attack first in combat
+  - `PlaceUnitEffect.cs` - Unit placement
+  - `VampirismEffect.cs` - Health drain
+  - `NoEffect.cs` - Placeholder for no effect
+
+#### Helper Classes (Assets/Game/Scripts/Helpers/)
+- `StaticDataService.cs` - Centralized service for accessing all static game data (cards, heroes, units)
+- `CardGenerator.cs` - Generates card decks and individual cards
+- `CardTypeMatcher.cs` - Matches cards to their appropriate types
+- `GameUIHelper.cs` - Helpers for game UI operations
+- `SaveService.cs` - Manages player save data with integration to StaticDataService
+- `VisualService.cs` - Handles visual data for cards and other game elements
+
+#### Enums (Assets/Game/Scripts/Data/Enums/)
+- `CardId.cs` - Card identifiers
+- `CardTypeId.cs` - Card type classification (Unit, Magic)
+- `ClassId.cs` - Unit class types
+- `MagicId.cs` - Magic card types
+- `MagicTypeId.cs` - Magic effect categories
+- `PlaceMarkId.cs` - Special markings for board spaces
+- `RaceId.cs` - Unit race types
+- `RarityId.cs` - Card rarity levels
+- `SkillId.cs` - Unit skills and abilities
+- `UnitId.cs` - Unit identifiers
+
+## Technical Considerations
+
+### Design Patterns
+- **MVC Pattern**: Separation of game state (model), controllers (MoveControllers), and view (UI)
+- **Command Pattern**: Move actions are encapsulated as data objects
+- **Strategy Pattern**: Card effects use polymorphism via the ICardEffect interface
+- **Factory Pattern**: CardEffectFactory creates appropriate effects based on card type
+- **Dependency Injection**: Components are provided through constructors
+- **Observer Pattern**: Event system for state changes (e.g., HeroState.EventChanged)
+
+### Async Programming
+- Using UniTask for asynchronous operations
+- Card selection and moves are handled asynchronously
+- Allows for UI interaction and animations during gameplay
+
+### Data Flow
+1. GameInitializer creates GameSession with player data
+2. GameSession initializes controllers and game state
+3. Initial card selection phase via ChooseCards method
+4. Turn progression through DoTurn method
+5. MoveControllers determine actions
+6. BattleResolver processes actions and applies to GameState
+7. Effects are applied in proper phase order
+8. Win conditions are checked after battle resolution
+
+## Implementation Status
+
+### Completed Components
+- Basic class structure and relationships
+- State management classes
+- Card and board data structures
+- Initial card drawing workflow
+- Card effect system implementation
+- Battle resolution with phased execution
+- Win condition checking
+- Card burning for mana gain
+
+### Partially Implemented
+- Card selection logic
+- GameSession flow
+- Player and AI move controllers
+- Game state analysis system
+
+### Missing/TODO Components
+- Complete player input handling for moves
+- Improved AI decision making
+- Additional card types and effects
+- UI components for cards and board
+- Animations for card effects and combat
+- Proper matchmaking
+- Save/load functionality
+- Deck building interface
+
+## Extension Points
+
+### High Priority Implementation Tasks
+1. Complete player input handling system in PlayerMoveController.cs
+2. Improve AI decision making in BotMoveController.cs
+3. Add UI components for game board and cards
+4. Add animations for card effects and combat
+5. Implement proper matchmaking in OpponentFinder.cs
+
+### Architecture Extension Points
+1. Extend the card effect system with more effect types
+2. Implement position-based board effects
+3. Add multiplayer networking capability
+4. Create a more sophisticated card generation system
+5. Implement deck builder with card collection management
+
+## Coding Conventions
+- PascalCase for public members and types
+- _camelCase with underscore prefix for private fields
+- Namespace structure follows directory structure: Game.Scripts.[Category]
+- Abstract classes prefixed with "Base" (e.g., BaseMoveController)
+- Events follow C# standard naming (e.g., EventChanged)
+
+## Dependencies
+- UniTask library for async/await pattern
+- Unity core systems
+- DOTween for animations
+- Sirenix for editor tools
+- ScriptableObjects for card configuration
+
+## Testing Approach
+- TestMoveController provides basis for automated testing
+- BattleResolver includes game state analysis for evaluating game balance
+- Consider adding unit tests for card effects and game rules
+- Manual testing through Unity Editor play mode
+
+## Next Development Steps
+1. Complete the player input handling system
+2. Implement UI components for card display and interaction
+3. Add animations for card effects and combat
+4. Improve AI decision making
+5. Implement proper matchmaking
+6. Add save/load functionality
+7. Develop deck building interface

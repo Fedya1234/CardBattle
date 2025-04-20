@@ -11,5 +11,6 @@ namespace Game.Scripts.Data.Visual
         public ClassId Class;
         public RaceId Race;
         public RarityId Rarity;
+        public CardTypeId Type;
     }
 }

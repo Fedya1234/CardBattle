@@ -15,7 +15,9 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    - {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -60,10 +62,16 @@ MonoBehaviour:
     - Name: Icon
       Entry: 6
       Data: 
+    - Name: Class
+      Entry: 3
+      Data: 0
     - Name: Race
       Entry: 3
       Data: 0
     - Name: Rarity
+      Entry: 3
+      Data: 0
+    - Name: Type
       Entry: 3
       Data: 0
     - Name: 
@@ -90,12 +98,171 @@ MonoBehaviour:
     - Name: Icon
       Entry: 6
       Data: 
+    - Name: Class
+      Entry: 3
+      Data: 0
     - Name: Race
       Entry: 3
       Data: 1
     - Name: Rarity
       Entry: 3
       Data: 1
+    - Name: Type
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _heroes
+      Entry: 7
+      Data: 4|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroId,
+        Assembly-CSharp],[Game.Scripts.Data.Visual.HeroVisual, Assembly-CSharp]],
+        mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 5|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 6|Game.Scripts.Data.Visual.HeroVisual, Assembly-CSharp
+    - Name: Name
+      Entry: 1
+      Data: Warrior
+    - Name: Description
+      Entry: 1
+      Data: Strong Hero
+    - Name: Icon
+      Entry: 10
+      Data: 0
+    - Name: Class
+      Entry: 3
+      Data: 0
+    - Name: Race
+      Entry: 3
+      Data: 0
+    - Name: Rarity
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 7
+      Data: 7|Game.Scripts.Data.Visual.HeroVisual, Assembly-CSharp
+    - Name: Name
+      Entry: 1
+      Data: Mage
+    - Name: Description
+      Entry: 1
+      Data: Magic Mage
+    - Name: Icon
+      Entry: 10
+      Data: 1
+    - Name: Class
+      Entry: 3
+      Data: 1
+    - Name: Race
+      Entry: 3
+      Data: 1
+    - Name: Rarity
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _heroMagics
+      Entry: 7
+      Data: 8|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroMagicId,
+        Assembly-CSharp],[Game.Scripts.Data.Visual.HeroMagicVisual, Assembly-CSharp]],
+        mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 9|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroMagicId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 10|Game.Scripts.Data.Visual.HeroMagicVisual, Assembly-CSharp
+    - Name: Name
+      Entry: 1
+      Data: Hero Magic Heal
+    - Name: Description
+      Entry: 1
+      Data: Heal Unit
+    - Name: Icon
+      Entry: 6
+      Data: 
+    - Name: Race
+      Entry: 3
+      Data: 0
+    - Name: Rarity
+      Entry: 3
+      Data: 0
+    - Name: MagicTypeId
+      Entry: 3
+      Data: 2
     - Name: 
       Entry: 8
       Data: 

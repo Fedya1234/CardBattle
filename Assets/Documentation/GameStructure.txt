@@ -1,0 +1,131 @@
+# Card Battle Game Structure
+
+## Overview
+This is a card battler game similar to Hearthstone, currently in prototype stage. The game follows a traditional CCG (Collectible Card Game) structure with players drawing cards from a deck, playing them on a 3x3 grid board, and attempting to reduce the opponent's health to zero.
+
+## Core Game Components
+
+### Game Flow
+1. Game initialization (GameInitializer.cs)
+   - Gets player save data
+   - Finds an opponent using OpponentFinder
+   - Creates and starts a new GameSession
+
+2. Game session (GameSession.cs)
+   - Manages the overall state of a match
+   - Sets up player and bot controllers
+   - Handles the initial card draw/mulligan phase
+   - Manages turn progression
+
+3. Move controllers
+   - BaseMoveController: Abstract class defining the interface for player actions
+   - PlayerMoveController: Handles human player decision making (partially implemented)
+   - BotMoveController: Handles AI opponent decision making (partially implemented)
+   - TestMoveController: Used for debugging/testing, implements random card selection
+
+### Game State
+1. GameState
+   - Contains references to both players' states
+   - Tracks current round
+   - Identifies player vs opponent indexes
+
+2. PlayerState
+   - BoardState: Represents the player's side of the game board
+   - PlayerCardsState: Manages the player's deck, hand, and discard pile
+   - HeroState: Tracks the player's health and mana
+
+3. Board representation
+   - BoardState: Contains a 3x3 grid of GameBoardPlace objects
+   - GameBoardPlace: Represents a single space on the board
+     - Can hold a unit
+     - Tracks dead units for potential revival mechanics
+     - Can have special markings/effects
+
+### Card System
+1. Cards
+   - CardLevel: Basic representation of a card with ID and level
+   - CardSave: Extends CardLevel with count for deck building
+   - CardId: Enum of available card types
+   - CardTypeId: Enum defining card types (Unit, Magic)
+
+2. Card Actions
+   - PlayerMove: Contains a list of CardMove objects representing actions a player takes
+   - CardMove: Represents placing a specific card at a specific position on the board
+   - PlayerMoveReplyData: Response data for player moves
+
+3. Units
+   - GameUnitData: Represents a unit placed on the board (referenced in GameBoardPlace)
+   - UnitState: Tracks unit health, damage, and skills
+   - UnitData: Basic unit identification data
+
+### Card Effects System
+1. Effect Types
+   - BaseCardEffect: Abstract base class for all card effects
+   - ICardEffect: Interface defining the card effect contract
+   - EffectType: Different phases of effect resolution (Positive, Negative, PassiveAbility, Combat)
+
+2. Specific Effects
+   - AntiMagicEffect: Provides protection against magical attacks
+   - ArmorEffect: Reduces incoming damage
+   - CombatEffect: Handles unit combat resolution
+   - DamageEffect: Deals direct damage
+   - DoubleDamageEffect: Doubles unit damage output
+   - EndTurnHealEffect: Heals units at the end of turn
+   - FirstStrikeEffect: Allows units to attack first
+   - PlaceUnitEffect: Places a unit on the board
+   - VampirismEffect: Heals when dealing damage
+   - NoEffect: Empty effect placeholder
+
+3. Effect Factory
+   - CardEffectFactory: Creates appropriate card effects based on card type
+
+### Battle Resolution
+1. BattleResolver
+   - Handles the execution of player moves
+   - Processes played cards in order of mana cost
+   - Resolves battle phases in sequence
+   - Applies card effects and unit abilities
+   - Checks for win conditions
+   - Analyzes game state advantage
+
+2. Battle Phases
+   - Positive spell effects (buffs, heals)
+   - Negative spell effects (damage, debuffs)
+   - Passive abilities (triggered effects)
+   - Combat phase (units attacking)
+
+### Enums and Identifiers
+1. Card Related
+   - CardId: Identifies different cards
+   - CardTypeId: Distinguishes between card types (Unit, Magic)
+   - MagicId: Identifies magic card types
+   - MagicTypeId: Categorizes magic effects
+
+2. Unit Related
+   - UnitId: Identifies different unit types
+   - RaceId: Defines unit races (Human, Elf, etc.)
+   - ClassId: Defines unit classes (Warrior, Mage, etc.)
+   - RarityId: Card rarity levels
+
+3. Skills and Abilities
+   - SkillId: Identifies unit skills and abilities
+   - PlaceMarkId: Special markings/effects for board spaces
+
+## Current Implementation Status
+- Basic structure and data models are in place
+- Card effect system is implemented with multiple effect types
+- Battle resolution with phased execution is functional
+- Move controllers for player and AI are partially implemented
+- Game advantage analysis system is working
+- Win condition checking is implemented
+- Card burning for mana gain is functional
+
+## Notable TODOs
+- Complete the player input handling system
+- Improve AI decision making
+- Add more card types and effects
+- Implement UI components for card display and interaction
+- Add animations for card effects and combat
+- Implement proper matchmaking
+- Add save/load functionality
+- Implement deck building interface
