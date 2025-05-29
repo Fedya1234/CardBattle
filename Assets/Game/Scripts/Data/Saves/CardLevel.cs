@@ -1,9 +1,11 @@
+using System;
 using Game.Scripts.Data.Enums;
 using Game.Scripts.Data.Static;
 using Game.Scripts.Helpers;
 
 namespace Game.Scripts.Data.Saves
 {
+    [Serializable]
     public class CardLevel
     {
         public CardId Id;

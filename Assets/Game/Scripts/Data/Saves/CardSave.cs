@@ -1,7 +1,9 @@
+using System;
 using Game.Scripts.Data.Enums;
 
 namespace Game.Scripts.Data.Saves
 {
+    [Serializable]
     public class CardSave : CardLevel
     {
         public int Count;

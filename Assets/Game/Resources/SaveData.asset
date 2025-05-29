@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a39f8822c518430d8c12e5300ca57fb, type: 3}
+  m_Name: SaveData
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  PlayerSave:
+    HeroId: 1
+    Level: 1
+    Magics:
+    - Level: 0
+      MagicIndex: 0
+    Heroes:
+    - Level: 1
+      CurrentMagicIndex: 0
+      Experience: 0
+      Magic:
+      - Level: 0
+        MagicIndex: 0
+    Cards:
+    - Id: 0
+      Level: 0
+      Count: 5
+    - Id: 1
+      Level: 0
+      Count: 10
+    - Id: 2
+      Level: 0
+      Count: 12

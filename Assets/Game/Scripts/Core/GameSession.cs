@@ -11,8 +11,8 @@ namespace Game.Scripts.Core
 {
     public class GameSession
     {
+        public const int PlayerIndex = 0;
         private const int PlayersCount = 2;
-        private const int PlayerIndex = 0;
         private const int StartCardsCount = 4;
         private List<BaseMoveController> _moveControllers = new ();
         private GameState _gameState;
@@ -36,6 +36,22 @@ namespace Game.Scripts.Core
             _moveControllers.Add(new BotMoveController(1));
             
             _battleResolver = new BattleResolver();
+        }
+
+        /// <summary>
+        /// Gets the PlayerMoveController for UI integration
+        /// </summary>
+        public PlayerMoveController GetPlayerMoveController()
+        {
+            return _moveControllers[PlayerIndex] as PlayerMoveController;
+        }
+        
+        /// <summary>
+        /// Gets the current game state
+        /// </summary>
+        public GameState GetGameState()
+        {
+            return _gameState;
         }
 
         /// <summary>
@@ -230,14 +246,6 @@ namespace Game.Scripts.Core
         {
             // This is a no-op for now, as the turn system is already handled in DoTurn()
             // If we want to add additional end-of-turn logic, it would go here
-        }
-        
-        /// <summary>
-        /// Gets the current game state
-        /// </summary>
-        public GameState GetGameState()
-        {
-            return _gameState;
         }
     }
 }

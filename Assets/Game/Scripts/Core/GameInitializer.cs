@@ -21,7 +21,7 @@ namespace Game.Scripts.Core
         public delegate void GameSessionCreatedHandler(GameSession session);
         public event GameSessionCreatedHandler OnGameSessionCreated;
         
-        public async UniTaskVoid StartGame()
+        public async UniTask StartGame()
         {
             Debug.Log("Starting game...");
             
