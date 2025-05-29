@@ -1,26 +1,31 @@
 # Card Battle Game Structure
 
 ## Overview
-This is a card battler game similar to Hearthstone, currently in prototype stage. The game follows a traditional CCG (Collectible Card Game) structure with players drawing cards from a deck, playing them on a 3x3 grid board, and attempting to reduce the opponent's health to zero.
+This is a card battler game similar to Hearthstone, currently in advanced prototype stage with core gameplay systems implemented. The game follows a traditional CCG (Collectible Card Game) structure with players drawing cards from a deck, playing them on a 3x3 grid board, and attempting to reduce the opponent's health to zero. Features multiple hero classes, sophisticated battle resolution, and a comprehensive save system.
 
 ## Core Game Components
 
 ### Game Flow
 1. Game initialization (GameInitializer.cs)
-   - Gets player save data
+   - Gets player save data with fallback generation
+   - Handles starter deck creation with CardGenerator integration
+   - Supports hero selection (defaults to Warrior if not set)
    - Finds an opponent using OpponentFinder
-   - Creates and starts a new GameSession
+   - Creates and starts a new GameSession with event system
 
 2. Game session (GameSession.cs)
-   - Manages the overall state of a match
-   - Sets up player and bot controllers
+   - Complete game state and flow management
+   - Sets up player and bot controllers with game state sharing
    - Handles the initial card draw/mulligan phase
-   - Manages turn progression
+   - Manages turn progression with mana increment (up to 9)
+   - Supports card burning for mana with UI integration
+   - Event system for UI updates (OnGameStateUpdated, OnGameEnded)
+   - Simultaneous player move execution
 
 3. Move controllers
    - BaseMoveController: Abstract class defining the interface for player actions
    - PlayerMoveController: Handles human player decision making (partially implemented)
-   - BotMoveController: Handles AI opponent decision making (partially implemented)
+   - BotMoveController: Handles AI opponent decision making with game state analysis
    - TestMoveController: Used for debugging/testing, implements random card selection
 
 ### Game State
@@ -28,71 +33,140 @@ This is a card battler game similar to Hearthstone, currently in prototype stage
    - Contains references to both players' states
    - Tracks current round
    - Identifies player vs opponent indexes
+   - Provides state access methods
 
 2. PlayerState
-   - BoardState: Represents the player's side of the game board
-   - PlayerCardsState: Manages the player's deck, hand, and discard pile
-   - HeroState: Tracks the player's health and mana
+   - BoardState: Represents the player's side of the game board (3x3 grid)
+   - PlayerCardsState: Manages deck, hand, discard pile with draw operations
+   - HeroState: Tracks health, mana with event system for UI updates
 
 3. Board representation
    - BoardState: Contains a 3x3 grid of GameBoardPlace objects
    - GameBoardPlace: Represents a single space on the board
-     - Can hold a unit
+     - Can hold a unit with full state management
      - Tracks dead units for potential revival mechanics
      - Can have special markings/effects
+     - Handles unit placement, death, and revival
+
+### Hero System
+1. Hero Classes
+   - HeroId: Multiple hero types (Warrior, Mage, Rogue, Paladin, Hunter, Druid)
+   - HeroData: Static hero configuration with health values
+   - HeroSave: Hero progression and save data
+   - HeroState: Runtime hero state with health and mana management
+
+2. Hero Magic System
+   - HeroMagicId: Hero-specific magic abilities
+   - HeroMagicData: Static hero magic configuration
+   - HeroMagicSave: Hero magic progression data
+   - HeroMagicVisual: Visual data for hero magic
 
 ### Card System
 1. Cards
-   - CardLevel: Basic representation of a card with ID and level
+   - CardLevel: Enhanced card representation with mana cost calculation
    - CardSave: Extends CardLevel with count for deck building
    - CardId: Enum of available card types
    - CardTypeId: Enum defining card types (Unit, Magic)
+   - CardStaticData: Static card configuration with mana costs
 
 2. Card Actions
-   - PlayerMove: Contains a list of CardMove objects representing actions a player takes
-   - CardMove: Represents placing a specific card at a specific position on the board
-   - PlayerMoveReplyData: Response data for player moves
+   - PlayerMove: Contains card moves and burned cards for mana
+   - CardMove: Represents placing a specific card at a specific position
+   - PlayerMoveReplyData: Response data for player moves with success tracking
+   - RoundMove: Complete round action data
 
 3. Units
-   - GameUnitData: Represents a unit placed on the board (referenced in GameBoardPlace)
-   - UnitState: Tracks unit health, damage, and skills
+   - GameUnitData: Represents a unit placed on the board
+   - UnitState: Tracks unit health, damage, and skills with modification methods
    - UnitData: Basic unit identification data
+   - UnitStaticData: Static unit configuration
+   - UnitStaticLevelData: Level-specific unit data
 
 ### Card Effects System
 1. Effect Types
-   - BaseCardEffect: Abstract base class for all card effects
+   - BaseCardEffect: Abstract base class for all effects
    - ICardEffect: Interface defining the card effect contract
    - EffectType: Different phases of effect resolution (Positive, Negative, PassiveAbility, Combat)
 
 2. Specific Effects
    - AntiMagicEffect: Provides protection against magical attacks
    - ArmorEffect: Reduces incoming damage
-   - CombatEffect: Handles unit combat resolution
-   - DamageEffect: Deals direct damage
+   - CombatEffect: Handles sophisticated unit combat resolution
+   - DamageEffect: Deals direct damage with anti-magic checking
    - DoubleDamageEffect: Doubles unit damage output
    - EndTurnHealEffect: Heals units at the end of turn
    - FirstStrikeEffect: Allows units to attack first
-   - PlaceUnitEffect: Places a unit on the board
+   - PlaceUnitEffect: Places a unit on the board with validation
    - VampirismEffect: Heals when dealing damage
    - NoEffect: Empty effect placeholder
 
 3. Effect Factory
-   - CardEffectFactory: Creates appropriate card effects based on card type
+   - CardEffectFactory: Creates appropriate card effects based on card type with skill support
+   - Supports unit placement, magic effects, and skill-based effects
 
 ### Battle Resolution
 1. BattleResolver
-   - Handles the execution of player moves
-   - Processes played cards in order of mana cost
-   - Resolves battle phases in sequence
-   - Applies card effects and unit abilities
-   - Checks for win conditions
-   - Analyzes game state advantage
+   - Complete battle resolution with phased execution
+   - Processes played cards ordered by mana cost (higher cost first)
+   - Resolves battle phases in proper sequence
+   - Applies card effects and unit abilities with position-based logic
+   - Handles burned cards for mana gain
+   - Checks for win conditions including draws
+   - Advanced game state analysis for AI decision making
 
 2. Battle Phases
+   - Card placement and effect application
    - Positive spell effects (buffs, heals)
    - Negative spell effects (damage, debuffs)
-   - Passive abilities (triggered effects)
-   - Combat phase (units attacking)
+   - Passive abilities (triggered effects with position bonuses)
+   - Combat phase (units attacking with complex combat logic)
+
+3. Game State Analysis
+   - Evaluates player advantage based on multiple factors
+   - Health comparison with weighted importance
+   - Board presence and unit power calculation
+   - Card advantage and mana comparison
+   - Returns normalized advantage score for AI decision making
+
+### Save System
+1. Save Architecture
+   - SaveableScriptableObject: Base class with JSON serialization
+   - SaveData: Main save data container ScriptableObject
+   - SaveService: Complete save management with PlayerPrefs integration
+   - SaveDataInitializer: Helper for save data initialization
+
+2. Save Data Types
+   - PlayerSave: Player progression, hero, level, and card collection
+   - HeroSave: Hero-specific progression data
+   - HeroMagicSave: Hero magic progression
+   - CardSave: Card ownership with quantities
+
+### Static Data System
+1. Data Management
+   - StaticData: Main static data container ScriptableObject
+   - StaticDataService: Centralized service with caching for performance
+   - Cached access to prevent repeated lookups
+   - Default value fallbacks for missing data
+
+2. Static Data Types
+   - CardStaticData: Card configuration and mana costs
+   - HeroData: Hero configuration and health values
+   - HeroMagicData: Hero magic configuration
+   - UnitStaticData: Unit base configuration
+   - UnitStaticLevelData: Level-specific unit statistics
+
+### Visual System
+1. Visual Data Management
+   - VisualStaticData: Central visual data container
+   - VisualService: Handles visual data access and management
+
+2. Visual Data Types
+   - CardVisual: Visual data for cards
+   - HeroVisual: Visual data for heroes
+   - HeroMagicVisual: Visual data for hero magic
+   - UnitVisual: Visual data for units
+   - UnitCardVisual: Visual data for unit cards
+   - MagicCardVisual: Visual data for magic cards
 
 ### Enums and Identifiers
 1. Card Related
@@ -101,31 +175,63 @@ This is a card battler game similar to Hearthstone, currently in prototype stage
    - MagicId: Identifies magic card types
    - MagicTypeId: Categorizes magic effects
 
-2. Unit Related
+2. Hero Related
+   - HeroId: Identifies hero classes (Warrior, Mage, Rogue, Paladin, Hunter, Druid)
+   - HeroMagicId: Identifies hero-specific magic abilities
+
+3. Unit Related
    - UnitId: Identifies different unit types
    - RaceId: Defines unit races (Human, Elf, etc.)
    - ClassId: Defines unit classes (Warrior, Mage, etc.)
    - RarityId: Card rarity levels
 
-3. Skills and Abilities
+4. Skills and Abilities
    - SkillId: Identifies unit skills and abilities
    - PlaceMarkId: Special markings/effects for board spaces
 
 ## Current Implementation Status
-- Basic structure and data models are in place
-- Card effect system is implemented with multiple effect types
-- Battle resolution with phased execution is functional
-- Move controllers for player and AI are partially implemented
-- Game advantage analysis system is working
-- Win condition checking is implemented
-- Card burning for mana gain is functional
 
-## Notable TODOs
-- Complete the player input handling system
-- Improve AI decision making
-- Add more card types and effects
-- Implement UI components for card display and interaction
-- Add animations for card effects and combat
-- Implement proper matchmaking
-- Add save/load functionality
-- Implement deck building interface
+### Completed Systems
+- Complete class structure and relationships
+- State management with event system
+- Card and board data structures
+- Initial card drawing workflow with mulligan
+- Complete card effect system with multiple effect types
+- Battle resolution with sophisticated phased execution
+- Win condition checking with draw support
+- Card burning for mana gain
+- Hero system with multiple classes
+- Save/load system with caching and PlayerPrefs integration
+- Static data management with performance optimization
+- Visual data system architecture
+- Game state analysis for AI decision making
+
+### Partially Implemented
+- Player input handling for moves (framework exists)
+- AI decision making (basic implementation with game state analysis)
+- Hero magic system (data structures exist, effects need implementation)
+
+### Ready for Implementation
+- UI components for cards and board (data structures and events ready)
+- Animations for card effects and combat (effect system supports it)
+- Deck building interface (save system and card management ready)
+- Multiplayer functionality (Server directory exists, data flow established)
+
+## Notable Architecture Features
+- Event-driven architecture for UI integration
+- Comprehensive caching system for performance
+- Flexible card effect system with factory pattern
+- Sophisticated battle resolution with multiple phases
+- Advanced AI game state analysis
+- Robust save system with fallback mechanisms
+- Service locator pattern for data access
+- Position-based board effects support
+
+## Next Development Priorities
+1. Implement UI components for card display and interaction
+2. Add animations for card effects and combat
+3. Complete player input handling system
+4. Develop deck building interface
+5. Implement hero magic abilities
+6. Add multiplayer/server functionality
+7. Create comprehensive testing suite

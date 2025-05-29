@@ -3,9 +3,9 @@
 ## Project Overview
 - Unity card battler game (similar to Hearthstone)
 - Uses C# with UniTask for async operations
-- Early prototype stage with core architecture in place
-- 3x3 grid-based gameplay
-- Turn-based card mechanics
+- Advanced prototype stage with core gameplay systems implemented
+- 3x3 grid-based gameplay with multiple hero classes
+- Turn-based card mechanics with sophisticated battle resolution
 
 ### Directory Structure
 Assets/
@@ -17,59 +17,69 @@ Assets/
 │   │   ├── Core/           # Core gameplay and controllers
 │   │   ├── Data/           # Data structures and models
 │   │   ├── Helpers/        # Utility and helper classes
-│   │   └── UI/             # User interface components
+│   │   ├── Save/           # Save system implementation
+│   │   └── UI/             # User interface components (empty - ready for implementation)
 │   ├── SO/                 # ScriptableObjects for game configuration
 │   └── Textures/
 ├── Input/                  # Input handling
 ├── Plugins/                # Third-party libraries
 ├── Resources/              # Runtime loadable assets
-├── Scenes/                 # Unity scenes
-└── Settings/               # Project settings
+├── Scenes/                 # Unity scenes (SampleScene.unity)
+├── Settings/               # Project settings
+└── Documentation/          # Project documentation
 
 ### Key Files and Classes
 
 #### Core Architecture
 - `GameInitializer.cs` (Assets/Game/Scripts/Core/GameInitializer.cs)
-  - Entry point for game startup
+  - Entry point for game startup with event system
   - Creates GameSession after finding opponent
-  - Path for expansion: Implement proper save loading
+  - Handles starter deck generation with fallback
+  - Supports hero selection (defaults to Warrior)
 
 - `GameSession.cs` (Assets/Game/Scripts/Core/GameSession.cs)
-  - Manages game state and flow
-  - Handles turn progression
-  - Coordinates player and bot moves
-  - Path for expansion: Complete OnPlayerMove and OnPlayerCardsChosen implementations
+  - Complete game state and flow management
+  - Handles turn progression with mana increment
+  - Coordinates player and bot moves with simultaneous execution
+  - Supports card burning for mana with UI integration
+  - Event system for UI updates (OnGameStateUpdated, OnGameEnded)
 
 - `OpponentFinder.cs` (Assets/Game/Scripts/Core/OpponentFinder.cs)
   - Currently has placeholder implementation
   - Path for expansion: Implement actual matchmaking or AI opponent selection logic
 
 - `BattleResolver.cs` (Assets/Game/Scripts/Core/BattleResolver.cs)
-  - Handles complete battle resolution
-  - Processes card placements and effects
+  - Complete battle resolution with phased execution
+  - Processes card placements with mana cost ordering
   - Executes battle phases (positive effects, negative effects, passive abilities, combat)
-  - Checks for win conditions
-  - Analyzes game state advantage for AI decision making
+  - Advanced game state analysis for AI decision making
+  - Win condition checking with draw support
 
 #### Move Controllers (Assets/Game/Scripts/Core/MoveControllers/)
 - `BaseMoveController.cs` - Abstract base class with common interface
 - `PlayerMoveController.cs` - Human player controls (partially implemented)
-- `BotMoveController.cs` - AI opponent controls (partially implemented)
+- `BotMoveController.cs` - AI opponent controls with game state analysis
 - `TestMoveController.cs` - Testing implementation with random selection
 
 #### State Management (Assets/Game/Scripts/Data/Core/State/)
 - `GameState.cs` - Top-level game state container
 - `PlayerState.cs` - Individual player state
 - `BoardState.cs` - 3x3 grid representation
-- `PlayerCardsState.cs` - Card collection management
-- `HeroState.cs` - Player health and mana (simplified without MaxHealth/MaxMana)
+- `PlayerCardsState.cs` - Card collection management with deck operations
+- `HeroState.cs` - Player health and mana with event system
 - `UnitState.cs` - Unit health, damage, and skills
 
 #### Card System (Assets/Game/Scripts/Data/)
-- `CardLevel.cs` (Assets/Game/Scripts/Data/Saves/CardLevel.cs) - Basic card representation
+- `CardLevel.cs` (Assets/Game/Scripts/Data/Saves/CardLevel.cs) - Enhanced card representation with mana cost calculation
 - `CardSave.cs` (Assets/Game/Scripts/Data/Saves/CardSave.cs) - Card with quantity for collections
 - `CardMove.cs` (Assets/Game/Scripts/Data/Core/Move/CardMove.cs) - Card placement on board
-- `PlayerMove.cs` (Assets/Game/Scripts/Data/Core/Move/PlayerMove.cs) - Collection of card moves
+- `PlayerMove.cs` (Assets/Game/Scripts/Data/Core/Move/PlayerMove.cs) - Collection of card moves with burned card support
+
+#### Hero System
+- `HeroSave.cs` (Assets/Game/Scripts/Data/Saves/HeroSave.cs) - Hero progression data
+- `HeroData.cs` (Assets/Game/Scripts/Data/Static/HeroData.cs) - Static hero configuration
+- `HeroMagicSave.cs` (Assets/Game/Scripts/Data/Saves/HeroMagicSave.cs) - Hero magic abilities
+- `HeroMagicData.cs` (Assets/Game/Scripts/Data/Static/HeroMagicData.cs) - Static hero magic data
 
 #### Board System
 - `GameBoardPlace.cs` (Assets/Game/Scripts/Data/Core/GameBoardPlace.cs) - Single board position
@@ -79,31 +89,37 @@ Assets/
 #### Card Effect System (Assets/Game/Scripts/Data/Core/Effects/)
 - `BaseCardEffect.cs` - Abstract base class for all effects
 - `ICardEffect.cs` - Interface defining effect contract
-- `CardEffectFactory.cs` - Creates appropriate effects based on card type
+- `CardEffectFactory.cs` - Creates appropriate effects based on card type with skill support
 - Specific Effects:
   - `AntiMagicEffect.cs` - Protection against magic
   - `ArmorEffect.cs` - Damage reduction
-  - `CombatEffect.cs` - Unit combat resolution
-  - `DamageEffect.cs` - Direct damage
+  - `CombatEffect.cs` - Unit combat resolution with sophisticated logic
+  - `DamageEffect.cs` - Direct damage with anti-magic checking
   - `DoubleDamageEffect.cs` - Damage multiplier
   - `EndTurnHealEffect.cs` - End of turn healing
   - `FirstStrikeEffect.cs` - Attack first in combat
-  - `PlaceUnitEffect.cs` - Unit placement
+  - `PlaceUnitEffect.cs` - Unit placement with validation
   - `VampirismEffect.cs` - Health drain
   - `NoEffect.cs` - Placeholder for no effect
 
 #### Helper Classes (Assets/Game/Scripts/Helpers/)
-- `StaticDataService.cs` - Centralized service for accessing all static game data (cards, heroes, units)
+- `StaticDataService.cs` - Centralized service with caching for accessing all static game data
 - `CardGenerator.cs` - Generates card decks and individual cards
-- `CardTypeMatcher.cs` - Matches cards to their appropriate types
 - `GameUIHelper.cs` - Helpers for game UI operations
-- `SaveService.cs` - Manages player save data with integration to StaticDataService
+- `SaveService.cs` - Complete save management with PlayerPrefs integration
 - `VisualService.cs` - Handles visual data for cards and other game elements
+
+#### Save System (Assets/Game/Scripts/Save/)
+- `SaveableScriptableObject.cs` - Base class for saveable ScriptableObjects with JSON serialization
+- `SaveDataInitializer.cs` - Initialization helper for save data
+- `SaveData.cs` - Main save data container ScriptableObject
 
 #### Enums (Assets/Game/Scripts/Data/Enums/)
 - `CardId.cs` - Card identifiers
 - `CardTypeId.cs` - Card type classification (Unit, Magic)
 - `ClassId.cs` - Unit class types
+- `HeroId.cs` - Hero identifiers (Warrior, Mage, Rogue, Paladin, Hunter, Druid)
+- `HeroMagicId.cs` - Hero magic abilities
 - `MagicId.cs` - Magic card types
 - `MagicTypeId.cs` - Magic effect categories
 - `PlaceMarkId.cs` - Special markings for board spaces
@@ -111,6 +127,23 @@ Assets/
 - `RarityId.cs` - Card rarity levels
 - `SkillId.cs` - Unit skills and abilities
 - `UnitId.cs` - Unit identifiers
+
+#### Visual System (Assets/Game/Scripts/Data/Visual/)
+- `VisualStaticData.cs` - Central visual data container
+- `CardVisual.cs` - Visual data for cards
+- `HeroVisual.cs` - Visual data for heroes
+- `HeroMagicVisual.cs` - Visual data for hero magic
+- `UnitVisual.cs` - Visual data for units
+- `UnitCardVisual.cs` - Visual data for unit cards
+- `MagicCardVisual.cs` - Visual data for magic cards
+
+#### Static Data System (Assets/Game/Scripts/Data/Static/)
+- `StaticData.cs` - Main static data container ScriptableObject
+- `CardStaticData.cs` - Static card configuration
+- `HeroData.cs` - Static hero configuration
+- `HeroMagicData.cs` - Static hero magic configuration
+- `UnitStaticData.cs` - Static unit configuration
+- `UnitStaticLevelData.cs` - Level-specific unit data
 
 ## Technical Considerations
 
@@ -120,66 +153,75 @@ Assets/
 - **Strategy Pattern**: Card effects use polymorphism via the ICardEffect interface
 - **Factory Pattern**: CardEffectFactory creates appropriate effects based on card type
 - **Dependency Injection**: Components are provided through constructors
-- **Observer Pattern**: Event system for state changes (e.g., HeroState.EventChanged)
+- **Observer Pattern**: Event system for state changes and UI updates
+- **Service Locator**: StaticDataService and SaveService provide centralized access
 
 ### Async Programming
 - Using UniTask for asynchronous operations
 - Card selection and moves are handled asynchronously
 - Allows for UI interaction and animations during gameplay
+- Simultaneous player move execution
 
 ### Data Flow
 1. GameInitializer creates GameSession with player data
 2. GameSession initializes controllers and game state
 3. Initial card selection phase via ChooseCards method
-4. Turn progression through DoTurn method
-5. MoveControllers determine actions
-6. BattleResolver processes actions and applies to GameState
-7. Effects are applied in proper phase order
-8. Win conditions are checked after battle resolution
+4. Turn progression through DoTurn method with mana increment
+5. MoveControllers determine actions simultaneously
+6. BattleResolver processes actions in proper phase order
+7. Effects are applied with position-based and skill-based logic
+8. Win conditions are checked with comprehensive game state analysis
+
+### Save System
+- ScriptableObject-based save system with JSON serialization
+- PlayerPrefs integration for persistence
+- Cached access for performance
+- Default value fallbacks
 
 ## Implementation Status
 
 ### Completed Components
-- Basic class structure and relationships
-- State management classes
+- Complete class structure and relationships
+- State management classes with event system
 - Card and board data structures
 - Initial card drawing workflow
-- Card effect system implementation
-- Battle resolution with phased execution
-- Win condition checking
+- Complete card effect system implementation
+- Battle resolution with sophisticated phased execution
+- Win condition checking with draw support
 - Card burning for mana gain
+- Hero system with multiple classes
+- Save/load system with caching
+- Static data management with performance optimization
+- Visual data system
 
 ### Partially Implemented
-- Card selection logic
-- GameSession flow
-- Player and AI move controllers
-- Game state analysis system
+- Player input handling for moves
+- AI decision making (basic implementation exists)
+- Game state analysis system (implemented but can be enhanced)
 
 ### Missing/TODO Components
-- Complete player input handling for moves
-- Improved AI decision making
-- Additional card types and effects
 - UI components for cards and board
 - Animations for card effects and combat
-- Proper matchmaking
-- Save/load functionality
+- Proper matchmaking implementation
 - Deck building interface
+- Hero magic system completion
+- Server/multiplayer functionality (directory exists but empty)
 
 ## Extension Points
 
 ### High Priority Implementation Tasks
-1. Complete player input handling system in PlayerMoveController.cs
-2. Improve AI decision making in BotMoveController.cs
-3. Add UI components for game board and cards
-4. Add animations for card effects and combat
+1. Implement UI components for game board and cards
+2. Add animations for card effects and combat
+3. Complete player input handling system in PlayerMoveController.cs
+4. Improve AI decision making in BotMoveController.cs
 5. Implement proper matchmaking in OpponentFinder.cs
 
 ### Architecture Extension Points
-1. Extend the card effect system with more effect types
-2. Implement position-based board effects
-3. Add multiplayer networking capability
-4. Create a more sophisticated card generation system
-5. Implement deck builder with card collection management
+1. Extend the hero magic system
+2. Implement position-based board effects (foundation exists)
+3. Add multiplayer networking capability (Server directory ready)
+4. Create deck builder with card collection management
+5. Implement advanced AI with game state analysis
 
 ## Coding Conventions
 - PascalCase for public members and types
@@ -187,25 +229,37 @@ Assets/
 - Namespace structure follows directory structure: Game.Scripts.[Category]
 - Abstract classes prefixed with "Base" (e.g., BaseMoveController)
 - Events follow C# standard naming (e.g., EventChanged)
+- Extensive use of caching for performance
 
 ## Dependencies
 - UniTask library for async/await pattern
 - Unity core systems
 - DOTween for animations
-- Sirenix for editor tools
-- ScriptableObjects for card configuration
+- Sirenix.OdinInspector for editor tools
+- ScriptableObjects for data configuration
+- PlayerPrefs for save persistence
 
 ## Testing Approach
 - TestMoveController provides basis for automated testing
-- BattleResolver includes game state analysis for evaluating game balance
-- Consider adding unit tests for card effects and game rules
+- BattleResolver includes comprehensive game state analysis
+- Save system with fallback mechanisms
+- Default value handling throughout the system
 - Manual testing through Unity Editor play mode
 
+## Current Architecture Strengths
+1. Complete battle resolution system with phased execution
+2. Sophisticated game state analysis for AI
+3. Event-driven architecture for UI integration
+4. Comprehensive save system with caching
+5. Flexible card effect system with factory pattern
+6. Multiple hero classes with expansion support
+7. Performance-optimized static data access
+
 ## Next Development Steps
-1. Complete the player input handling system
-2. Implement UI components for card display and interaction
-3. Add animations for card effects and combat
-4. Improve AI decision making
-5. Implement proper matchmaking
-6. Add save/load functionality
-7. Develop deck building interface
+1. Implement UI components for card display and interaction
+2. Add animations for card effects and combat
+3. Complete the player input handling system
+4. Develop deck building interface
+5. Implement hero magic abilities
+6. Add multiplayer/server functionality
+7. Create comprehensive testing suite
