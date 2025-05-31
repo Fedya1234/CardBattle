@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Game.Scripts.Data.Core.State;
 using TMPro;
@@ -68,29 +69,36 @@ namespace Game.Scripts.UI.Board
             transform.DOMoveY(0f, 0.5f).SetEase(Ease.OutBounce);
         }
         
-        public void PlayDeathAnimation()
+        public async UniTask PlayAttackAnimation()
         {
-            // Анимация исчезновения
-            transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack);
-            transform.DORotate(new Vector3(0, 360, 0), 0.3f, RotateMode.LocalAxisAdd);
-            
-            // Уничтожаем объект после анимации
-            Destroy(gameObject, 0.3f);
-        }
-        
-        public void PlayAttackAnimation()
-        {
-            // Анимация атаки
+            // Анимация атаки с маленьким шейком
             var originalPos = transform.position;
             var sequence = DOTween.Sequence();
             
-            sequence.Append(transform.DOMoveZ(originalPos.z + 1f, 0.2f))
-                   .Append(transform.DOMoveZ(originalPos.z, 0.2f));
-                   
+            // Маленький шейк атакующего юнита
+            sequence.Append(transform.DOShakePosition(1f, 0.1f, 10, 90, false, true));
+            
             if (_animator != null)
             {
                 _animator.SetTrigger("Attack");
             }
+            
+            // Ждем завершения анимации
+            await sequence.AsyncWaitForCompletion();
+        }
+        
+        public async UniTask PlayDeathAnimation()
+        {
+            // Анимация исчезновения
+            var sequence = DOTween.Sequence();
+            sequence.Append(transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack));
+            sequence.Join(transform.DORotate(new Vector3(0, 360, 0), 0.3f, RotateMode.LocalAxisAdd));
+            
+            // Ждем завершения анимации
+            await sequence.AsyncWaitForCompletion();
+            
+            // Уничтожаем объект после анимации
+            Destroy(gameObject);
         }
         
         public void PlayDamageAnimation()

@@ -34,6 +34,48 @@ namespace Game.Scripts.UI
     private Dictionary<Vector2Int, BoardTile> _boardTiles = new Dictionary<Vector2Int, BoardTile>();
     private HandCardUI _selectedCardForBurning;
     
+    public static GameUI Instance { get; private set; }
+    
+    private void Awake()
+    {
+      Instance = this;
+    }
+    
+    /// <summary>
+    /// Gets the BoardUnit for a specific player and position
+    /// </summary>
+    public BoardUnit GetBoardUnit(int playerIndex, int line, int row)
+    {
+      // For opponent (player 1), offset the row by 3
+      var position = playerIndex == 0 ? 
+        new Vector2Int(line, row) : 
+        new Vector2Int(line, row + 3);
+        
+      _boardUnits.TryGetValue(position, out var boardUnit);
+      return boardUnit;
+    }
+    
+    /// <summary>
+    /// Removes a BoardUnit from the dictionary immediately
+    /// </summary>
+    public void RemoveBoardUnit(BoardUnit boardUnit)
+    {
+      // Find and remove the BoardUnit from our dictionary
+      var toRemove = new List<Vector2Int>();
+      foreach (var kvp in _boardUnits)
+      {
+        if (kvp.Value == boardUnit)
+        {
+          toRemove.Add(kvp.Key);
+        }
+      }
+      
+      foreach (var key in toRemove)
+      {
+        _boardUnits.Remove(key);
+      }
+    }
+    
     private void Start()
     {
       InitializeBoardTiles();
@@ -414,7 +456,7 @@ namespace Game.Scripts.UI
     {
       if (_boardUnits.TryGetValue(boardPosition, out var unit))
       {
-        unit.PlayDeathAnimation(); // Анимация будет сама уничтожать объект
+        _ = unit.PlayDeathAnimation(); // Start death animation asynchronously
         _boardUnits.Remove(boardPosition);
       }
     }
@@ -436,6 +478,12 @@ namespace Game.Scripts.UI
     
     private void OnDestroy()
     {
+      // Clear static instance
+      if (Instance == this)
+      {
+        Instance = null;
+      }
+      
       // Отписываемся от событий
       if (_playerController != null)
       {
