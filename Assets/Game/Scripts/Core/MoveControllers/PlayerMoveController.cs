@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Data.Core.Move;
+using Game.Scripts.Data.Core.State;
 using Game.Scripts.Data.Enums;
 using Game.Scripts.Data.Saves;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace Game.Scripts.Core.MoveControllers
         private bool _moveReady;
         private bool _cardChoicesReady;
         private bool _waitingForInput;
+        private GameState _gameState; // Добавляем ссылку на состояние игры для проверки маны
         
         // Events for UI communication
         public delegate void RequestMoveHandler();
@@ -30,6 +32,14 @@ namespace Game.Scripts.Core.MoveControllers
         public PlayerMoveController(int index) : base(index)
         {
             ResetState();
+        }
+        
+        /// <summary>
+        /// Устанавливает текущее состояние игры для проверки маны
+        /// </summary>
+        public void SetGameState(GameState gameState)
+        {
+            _gameState = gameState;
         }
         
         private void ResetState()
@@ -94,11 +104,80 @@ namespace Game.Scripts.Core.MoveControllers
             if (_pendingMove.Cards.Any(c => c.Card.Id == card.Id && c.Line == line && c.Row == row))
                 return false;
                 
+            // Проверяем достаточно ли маны для игры этой карты
+            if (_gameState != null)
+            {
+                var playerState = _gameState.GetState(Index);
+                int currentMana = playerState.Hero.Mana;
+                int totalManaNeeded = CalculateTotalManaNeeded(card);
+                
+                if (currentMana < totalManaNeeded)
+                {
+                    Debug.LogWarning($"Not enough mana to play card {card.Id}. Current mana: {currentMana}, needed: {totalManaNeeded}");
+                    return false;
+                }
+            }
+            
             var cardMove = new CardMove(card, line, row, Index);
             _pendingMove.AddCard(cardMove);
             
             Debug.Log($"Added card {card.Id} to move at position ({line}, {row})");
             return true;
+        }
+        
+        /// <summary>
+        /// Вычисляет общую ману, необходимую для текущего хода включая новую карту
+        /// </summary>
+        private int CalculateTotalManaNeeded(CardLevel newCard)
+        {
+            int totalMana = 0;
+            
+            // Добавляем стоимость всех карт уже в ходу
+            foreach (var cardMove in _pendingMove.Cards)
+            {
+                totalMana += cardMove.Card.GetManaCost();
+            }
+            
+            // Добавляем стоимость новой карты
+            totalMana += newCard.GetManaCost();
+            
+            return totalMana;
+        }
+        
+        /// <summary>
+        /// Проверяет можно ли сыграть карту с текущим количеством маны
+        /// </summary>
+        public bool CanPlayCard(CardLevel card)
+        {
+            if (_gameState == null)
+                return true; // Если нет состояния игры, разрешаем (для тестов)
+                
+            var playerState = _gameState.GetState(Index);
+            int currentMana = playerState.Hero.Mana;
+            int totalManaNeeded = CalculateTotalManaNeeded(card);
+            
+            return currentMana >= totalManaNeeded;
+        }
+        
+        /// <summary>
+        /// Возвращает текущее доступное количество маны
+        /// </summary>
+        public int GetAvailableMana()
+        {
+            if (_gameState == null)
+                return 0;
+                
+            var playerState = _gameState.GetState(Index);
+            int currentMana = playerState.Hero.Mana;
+            int usedMana = 0;
+            
+            // Вычитаем ману уже потраченную в текущем ходу
+            foreach (var cardMove in _pendingMove.Cards)
+            {
+                usedMana += cardMove.Card.GetManaCost();
+            }
+            
+            return currentMana - usedMana;
         }
         
         /// <summary>

@@ -57,11 +57,8 @@ namespace Game.Scripts.Core
         /// </summary>
         public async UniTask StartGame()
         {
-            // Initialize each player with their starting mana (2, as per the requirements)
-            foreach (var player in _gameState.Players)
-            {
-                player.Hero.ChangeMana(2);
-            }
+            // НЕ устанавливаем начальную ману здесь - она будет установлена в первом ходу (DoTurn)
+            // согласно спецификации: Ход 1 = 2 маны, Ход 2 = 3 маны, и т.д.
             
             // Draw initial cards for each player
             List<UniTask<ChooseCardsReplyData>> chooseCards = new List<UniTask<ChooseCardsReplyData>>();
@@ -99,13 +96,12 @@ namespace Game.Scripts.Core
             _gameState.Round++;
             Debug.Log($"Starting round {_gameState.Round}");
             
-            // Increment mana for each player (up to max 9)
+            // Устанавливаем ману согласно спецификации: Ход 1 = 2 маны, Ход 2 = 3 маны, и т.д. до максимума 9
             foreach (var player in _gameState.Players)
             {
-                if (player.Hero.Mana < 9)
-                {
-                    player.Hero.ChangeMana(1);
-                }
+                int targetMana = Mathf.Min(9, _gameState.Round + 1);
+                player.Hero.SetMana(targetMana);
+                Debug.Log($"Player mana set to {targetMana} for round {_gameState.Round}");
             }
             
             // Each player draws a card at the start of their turn
@@ -114,10 +110,14 @@ namespace Game.Scripts.Core
                 _gameState.GetState(i).Cards.TakeCard();
             }
             
-            // Notify subscribers that the game state has been updated (mana increased, cards drawn)
+            // Notify subscribers that the game state has been updated (mana set, cards drawn)
             OnGameStateUpdated?.Invoke(_gameState);
             
-            // Share game state with bot controller for decision making
+            // Share game state with controllers for decision making
+            if (_moveControllers[0] is PlayerMoveController playerController)
+            {
+                playerController.SetGameState(_gameState);
+            }
             if (_moveControllers[1] is BotMoveController botController)
             {
                 botController.SetGameState(_gameState);

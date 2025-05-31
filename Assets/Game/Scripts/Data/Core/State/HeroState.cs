@@ -101,5 +101,11 @@ namespace Game.Scripts.Data.Core.State
             Health += healthChange;
             EventChanged?.Invoke(this);
         }
+
+        public void SetMana(int targetMana)
+        {
+            Mana = targetMana;
+            EventChanged?.Invoke(this);
+        }
     }
 }
