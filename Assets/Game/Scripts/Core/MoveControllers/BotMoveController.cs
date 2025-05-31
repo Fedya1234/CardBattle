@@ -128,6 +128,9 @@ namespace Game.Scripts.Core.MoveControllers
                 return move;
             }
 
+            // Create a temporary copy of mana to simulate spending without affecting the actual game state
+            int availableMana = botState.Hero.Mana;
+
             // Decide how many cards to play (1 to min(3, available cards))
             int maxCardsToPlay = Mathf.Min(3, handCards.Count);
             int cardsToPlay = Random.Range(1, maxCardsToPlay + 1);
@@ -140,9 +143,9 @@ namespace Game.Scripts.Core.MoveControllers
                 var cardToPlay = shuffledCards[i];
                 
                 // Check if bot has enough mana to play this card
-                if (botState.Hero.Mana < cardToPlay.GetManaCost())
+                if (availableMana < cardToPlay.GetManaCost())
                 {
-                    Debug.Log($"BotMoveController: Not enough mana to play card {cardToPlay.Id} (cost: {cardToPlay.GetManaCost()}, available: {botState.Hero.Mana})");
+                    Debug.Log($"BotMoveController: Not enough mana to play card {cardToPlay.Id} (cost: {cardToPlay.GetManaCost()}, available: {availableMana})");
                     continue;
                 }
 
@@ -178,8 +181,9 @@ namespace Game.Scripts.Core.MoveControllers
                 var cardMove = new CardMove(cardToPlay, line, row, Index);
                 move.AddCard(cardMove);
                 
-                // Reduce available mana for next card consideration
-                botState.Hero.ChangeMana(-cardToPlay.GetManaCost());
+                // Reduce ONLY the temporary available mana for next card consideration
+                // Don't modify the actual game state here - that will be done in ApplyChanges
+                availableMana -= cardToPlay.GetManaCost();
             }
 
             // Randomly decide whether to burn a card for mana (30% chance)
