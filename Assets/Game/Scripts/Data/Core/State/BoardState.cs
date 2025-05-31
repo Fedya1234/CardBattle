@@ -1,5 +1,8 @@
+using System;
+
 namespace Game.Scripts.Data.Core.State
 {
+    [Serializable]
     public class BoardState
     {
         private const int LinesCount = 3;

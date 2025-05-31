@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Game.Scripts.Data.Tools;
 using UnityEngine;
 using Game.Scripts.UI;
 
@@ -7,6 +8,7 @@ namespace Game.Scripts.Core
     public class GameBootstrap : MonoBehaviour
     {
         [SerializeField] private GameUI _gameUI;
+        [SerializeField] private GameStateView _gameStateView;
         
         private GameInitializer _gameInitializer;
         
@@ -32,7 +34,7 @@ namespace Game.Scripts.Core
         private void OnGameSessionCreated(GameSession gameSession)
         {
             Debug.Log("Game Bootstrap: GameSession created, connecting to UI...");
-            
+            _gameStateView.GameState = gameSession.GetGameState();
             // Если UI найден, связываем его с игровой сессией
             if (_gameUI == null)
             {

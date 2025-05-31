@@ -340,7 +340,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 3
     - Name: 
       Entry: 7
       Data: 
@@ -352,19 +352,78 @@ MonoBehaviour:
       Data: 23|Game.Scripts.Data.Static.HeroData, Assembly-CSharp
     - Name: <Health>k__BackingField
       Entry: 3
-      Data: 0
+      Data: 50
     - Name: <Magics>k__BackingField
       Entry: 7
       Data: 24|System.Collections.Generic.List`1[[Game.Scripts.Data.Enums.HeroMagicId,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 1
     - Name: 
       Entry: 3
       Data: 1
     - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
       Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 7
+      Data: 25|Game.Scripts.Data.Static.HeroData, Assembly-CSharp
+    - Name: <Health>k__BackingField
+      Entry: 3
+      Data: 50
+    - Name: <Magics>k__BackingField
+      Entry: 7
+      Data: 26|System.Collections.Generic.List`1[[Game.Scripts.Data.Enums.HeroMagicId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 7
+      Data: 27|Game.Scripts.Data.Static.HeroData, Assembly-CSharp
+    - Name: <Health>k__BackingField
+      Entry: 3
+      Data: 100
+    - Name: <Magics>k__BackingField
+      Entry: 7
+      Data: 28|System.Collections.Generic.List`1[[Game.Scripts.Data.Enums.HeroMagicId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
       Data: 0
     - Name: 
       Entry: 13
@@ -386,12 +445,12 @@ MonoBehaviour:
       Data: 
     - Name: _heroMagic
       Entry: 7
-      Data: 25|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroMagicId,
+      Data: 29|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroMagicId,
         Assembly-CSharp],[Game.Scripts.Data.Static.HeroMagicData, Assembly-CSharp]],
         mscorlib
     - Name: comparer
       Entry: 7
-      Data: 26|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroMagicId,
+      Data: 30|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroMagicId,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -413,7 +472,7 @@ MonoBehaviour:
       Data: 1
     - Name: $v
       Entry: 7
-      Data: 27|Game.Scripts.Data.Static.HeroMagicData, Assembly-CSharp
+      Data: 31|Game.Scripts.Data.Static.HeroMagicData, Assembly-CSharp
     - Name: MaxLevel
       Entry: 3
       Data: 3
@@ -437,13 +496,13 @@ MonoBehaviour:
       Data: 
     - Name: _heroMagicGradeCosts
       Entry: 7
-      Data: 28|System.Int32[][], mscorlib
+      Data: 32|System.Int32[][], mscorlib
     - Name: 
       Entry: 12
       Data: 2
     - Name: 
       Entry: 7
-      Data: 29|System.Int32[], mscorlib
+      Data: 33|System.Int32[], mscorlib
     - Name: 
       Entry: 14
       Data: 3
@@ -464,7 +523,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 30|System.Int32[], mscorlib
+      Data: 34|System.Int32[], mscorlib
     - Name: 
       Entry: 14
       Data: 3

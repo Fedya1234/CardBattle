@@ -18,6 +18,7 @@ namespace Game.Scripts.Helpers
         private static readonly Dictionary<CardId, CardVisual> _cardVisualCache = new Dictionary<CardId, CardVisual>();
         private static readonly Dictionary<CardId, UnitCardVisual> _unitCardVisualCache = new Dictionary<CardId, UnitCardVisual>();
         private static readonly Dictionary<CardId, MagicCardVisual> _magicCardVisualCache = new Dictionary<CardId, MagicCardVisual>();
+        private static readonly Dictionary<UnitId, UnitVisual> _unitVisualCache = new ();
         
         // Static constructor
         static VisualService()
@@ -51,10 +52,34 @@ namespace Game.Scripts.Helpers
             // Use the private method from VisualStaticData through appropriate accessor
             return _visualData.GetCardTypeId(cardId);
         }
+        
+        public static UnitVisual GetUnitVisual(UnitId unitId)
+        {
+            // Check if we have unit visual data cached
+            if (!_unitVisualCache.TryGetValue(unitId, out var unitVisual))
+            {
+                // Try to get from visual data
+                if (_visualData != null)
+                {
+                    unitVisual = _visualData.GetUnitVisual(unitId);
+                }
+                
+                if (unitVisual == null)
+                {
+                    Debug.LogError($"Unit visual data not found for UnitId: {unitId}");
+                    return null;
+                }
+                
+                // Cache it
+                _unitVisualCache[unitId] = unitVisual;
+            }
+            
+            return unitVisual;
+        }
         /// <summary>
         /// Gets general card visual data for the specified card ID
         /// </summary>
-        public static CardVisual GetCardVisual(CardId cardId)
+        public static CardVisual GetCardVisual(CardId cardId) //TODO: Fix It
         {
             // Check if we have visual data cached
             if (!_cardVisualCache.TryGetValue(cardId, out var cardVisual))

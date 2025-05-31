@@ -16,7 +16,6 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
     - {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
     SerializedBytesString: 
@@ -53,13 +52,13 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 7
-      Data: 2|Game.Scripts.Data.Visual.CardVisual, Assembly-CSharp
+      Data: 2|Game.Scripts.Data.Visual.UnitCardVisual, Assembly-CSharp
     - Name: Name
       Entry: 1
-      Data: Card 1
+      Data: U0
     - Name: Description
       Entry: 1
-      Data: Super Card
+      Data: U1
     - Name: Icon
       Entry: 6
       Data: 
@@ -75,6 +74,9 @@ MonoBehaviour:
     - Name: Type
       Entry: 3
       Data: 0
+    - Name: UnitId
+      Entry: 3
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
@@ -89,13 +91,13 @@ MonoBehaviour:
       Data: 1
     - Name: $v
       Entry: 7
-      Data: 3|Game.Scripts.Data.Visual.CardVisual, Assembly-CSharp
+      Data: 3|Game.Scripts.Data.Visual.UnitCardVisual, Assembly-CSharp
     - Name: Name
       Entry: 1
-      Data: Card 2
+      Data: U_1
     - Name: Description
       Entry: 1
-      Data: Wow
+      Data: U1
     - Name: Icon
       Entry: 6
       Data: 
@@ -104,13 +106,16 @@ MonoBehaviour:
       Data: 0
     - Name: Race
       Entry: 3
-      Data: 1
+      Data: 0
     - Name: Rarity
       Entry: 3
-      Data: 1
+      Data: 0
     - Name: Type
       Entry: 3
       Data: 0
+    - Name: UnitId
+      Entry: 3
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
@@ -125,16 +130,16 @@ MonoBehaviour:
       Data: 2
     - Name: $v
       Entry: 7
-      Data: 4|Game.Scripts.Data.Visual.CardVisual, Assembly-CSharp
+      Data: 4|Game.Scripts.Data.Visual.UnitCardVisual, Assembly-CSharp
     - Name: Name
       Entry: 1
-      Data: card3
+      Data: U_2
     - Name: Description
       Entry: 1
-      Data: card3
+      Data: U_1
     - Name: Icon
-      Entry: 10
-      Data: 0
+      Entry: 6
+      Data: 
     - Name: Class
       Entry: 3
       Data: 0
@@ -145,6 +150,69 @@ MonoBehaviour:
       Entry: 3
       Data: 0
     - Name: Type
+      Entry: 3
+      Data: 0
+    - Name: UnitId
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _units
+      Entry: 7
+      Data: 5|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.UnitId,
+        Assembly-CSharp],[Game.Scripts.Data.Visual.UnitVisual, Assembly-CSharp]],
+        mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 6|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.UnitId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 7|Game.Scripts.Data.Visual.UnitVisual, Assembly-CSharp
+    - Name: Name
+      Entry: 1
+      Data: Unit 1
+    - Name: Description
+      Entry: 1
+      Data: Dest Unit 1
+    - Name: Icon
+      Entry: 6
+      Data: 
+    - Name: Class
+      Entry: 3
+      Data: 0
+    - Name: Race
+      Entry: 3
+      Data: 0
+    - Name: Rarity
       Entry: 3
       Data: 0
     - Name: 
@@ -161,12 +229,12 @@ MonoBehaviour:
       Data: 
     - Name: _heroes
       Entry: 7
-      Data: 5|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroId,
+      Data: 8|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroId,
         Assembly-CSharp],[Game.Scripts.Data.Visual.HeroVisual, Assembly-CSharp]],
         mscorlib
     - Name: comparer
       Entry: 7
-      Data: 6|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroId,
+      Data: 9|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroId,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -188,7 +256,7 @@ MonoBehaviour:
       Data: 1
     - Name: $v
       Entry: 7
-      Data: 7|Game.Scripts.Data.Visual.HeroVisual, Assembly-CSharp
+      Data: 10|Game.Scripts.Data.Visual.HeroVisual, Assembly-CSharp
     - Name: Name
       Entry: 1
       Data: Warrior
@@ -197,7 +265,7 @@ MonoBehaviour:
       Data: Strong Hero
     - Name: Icon
       Entry: 10
-      Data: 1
+      Data: 0
     - Name: Class
       Entry: 3
       Data: 0
@@ -221,7 +289,7 @@ MonoBehaviour:
       Data: 2
     - Name: $v
       Entry: 7
-      Data: 8|Game.Scripts.Data.Visual.HeroVisual, Assembly-CSharp
+      Data: 11|Game.Scripts.Data.Visual.HeroVisual, Assembly-CSharp
     - Name: Name
       Entry: 1
       Data: Mage
@@ -230,7 +298,7 @@ MonoBehaviour:
       Data: Magic Mage
     - Name: Icon
       Entry: 10
-      Data: 2
+      Data: 1
     - Name: Class
       Entry: 3
       Data: 1
@@ -254,12 +322,12 @@ MonoBehaviour:
       Data: 
     - Name: _heroMagics
       Entry: 7
-      Data: 9|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroMagicId,
+      Data: 12|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroMagicId,
         Assembly-CSharp],[Game.Scripts.Data.Visual.HeroMagicVisual, Assembly-CSharp]],
         mscorlib
     - Name: comparer
       Entry: 7
-      Data: 10|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroMagicId,
+      Data: 13|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroMagicId,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -281,7 +349,7 @@ MonoBehaviour:
       Data: 1
     - Name: $v
       Entry: 7
-      Data: 11|Game.Scripts.Data.Visual.HeroMagicVisual, Assembly-CSharp
+      Data: 14|Game.Scripts.Data.Visual.HeroMagicVisual, Assembly-CSharp
     - Name: Name
       Entry: 1
       Data: Hero Magic Heal

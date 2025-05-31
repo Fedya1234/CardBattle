@@ -56,16 +56,32 @@ namespace Game.Scripts.UI
     
     private void InitializeBoardTiles()
     {
-      // Создаем тайлы для игрового поля 3x3
+      // Создаем тайлы для игрового поля игрока (3x3 внизу)
       for (int line = 0; line < 3; line++)
       {
         for (int row = 0; row < 3; row++)
         {
           var position = new Vector2Int(line, row);
-          var worldPosition = BoardPositionToWorldPosition(position);
+          var worldPosition = BoardPositionToWorldPosition(position, false);
           
           var tile = Instantiate(_tilePrefab, worldPosition, Quaternion.identity, _boardContainer);
           tile.Initialize(position);
+          tile.name = $"PlayerTile_{line}_{row}";
+          _boardTiles[position] = tile;
+        }
+      }
+      
+      // Создаем тайлы для поля оппонента (3x3 вверху, позиции 3-5 по row)
+      for (int line = 0; line < 3; line++)
+      {
+        for (int row = 0; row < 3; row++)
+        {
+          var position = new Vector2Int(line, row + 3); // Смещаем для оппонента
+          var worldPosition = BoardPositionToWorldPosition(position, true);
+          
+          var tile = Instantiate(_tilePrefab, worldPosition, Quaternion.identity, _boardContainer);
+          tile.Initialize(position);
+          tile.name = $"OpponentTile_{line}_{row}";
           _boardTiles[position] = tile;
         }
       }
@@ -289,7 +305,7 @@ namespace Game.Scripts.UI
     
     private bool CanPlaceCard(CardLevel card, Vector2Int boardPosition)
     {
-      // Проверяем, что позиция в пределах поля
+      // Проверяем, что позиция в пределах игрового поля игрока (0-2 по row)
       if (boardPosition.x < 0 || boardPosition.x >= 3 || 
           boardPosition.y < 0 || boardPosition.y >= 3)
         return false;
@@ -344,18 +360,33 @@ namespace Game.Scripts.UI
           return;
       }
 
-      // Обновляем юнитов на поле на основе BoardState
+      // Обновляем юнитов на поле игрока (нижняя половина)
+      UpdatePlayerBoard(gameState.GetMyState(), true);
+      
+      // Обновляем юнитов на поле оппонента (верхняя половина)
+      if (gameState.GetOpponentState() != null && gameState.GetOpponentState().Board != null)
+      {
+          UpdatePlayerBoard(gameState.GetOpponentState(), false);
+      }
+    }
+    
+    private void UpdatePlayerBoard(PlayerState playerState, bool isMyBoard)
+    {
       for (int line = 0; line < 3; line++)
       {
         for (int row = 0; row < 3; row++)
         {
-          var place = gameState.GetMyState().Board.GetPlace(line, row);
-          var position = new Vector2Int(line, row);
+          var place = playerState.Board.GetPlace(line, row);
+          
+          // Для поля оппонента смещаем позицию по оси Z (ряды 3-5)
+          var position = isMyBoard ? 
+            new Vector2Int(line, row) : 
+            new Vector2Int(line, row + 3);
           
           if (!place.IsEmpty && !_boardUnits.ContainsKey(position))
           {
             // Создаем нового юнита
-            SpawnUnit(place.Unit, position);
+            SpawnUnit(place.Unit, position, !isMyBoard);
           }
           else if (place.IsEmpty && _boardUnits.ContainsKey(position))
           {
@@ -371,9 +402,9 @@ namespace Game.Scripts.UI
       }
     }
     
-    private void SpawnUnit(GameUnitData unitData, Vector2Int boardPosition)
+    private void SpawnUnit(GameUnitData unitData, Vector2Int boardPosition, bool isOpponent)
     {
-      var worldPosition = BoardPositionToWorldPosition(boardPosition);
+      var worldPosition = BoardPositionToWorldPosition(boardPosition, isOpponent);
       var unit = Instantiate(_unitPrefab, worldPosition, Quaternion.identity, _boardContainer);
       unit.Initialize(unitData.UnitState, boardPosition);
       _boardUnits[boardPosition] = unit;
@@ -388,13 +419,13 @@ namespace Game.Scripts.UI
       }
     }
     
-    private Vector3 BoardPositionToWorldPosition(Vector2Int boardPosition)
+    private Vector3 BoardPositionToWorldPosition(Vector2Int boardPosition, bool isOpponent = false)
     {
       // Логика преобразования позиции на поле в мировую позицию
-      // Например: каждая клетка 2x2 юнита, начинаем с (-2, 0, -2)
+      // Для оппонента смещаем по оси Z на 6 единиц
       float spacing = 2.0f;
       float offsetX = -2.0f; // Центрируем поле 3x3
-      float offsetZ = -2.0f;
+      float offsetZ = isOpponent ? 4.0f : -2.0f;
       
       return new Vector3(
         offsetX + boardPosition.x * spacing,

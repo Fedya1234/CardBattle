@@ -9,6 +9,7 @@ namespace Game.Scripts.Data.Visual
     public class VisualStaticData : SerializedScriptableObject
     {
         [SerializeField] private Dictionary<CardId, CardVisual> _cards;
+        [SerializeField] private Dictionary<UnitId, UnitVisual> _units;
         [SerializeField] private Dictionary<HeroId, HeroVisual> _heroes;
         [SerializeField] private Dictionary<HeroMagicId, HeroMagicVisual> _heroMagics;
         
@@ -21,6 +22,16 @@ namespace Game.Scripts.Data.Visual
                 return new HeroVisual();
             }
             return _heroes[heroId];
+        }
+        
+        public UnitVisual GetUnitVisual(UnitId unitId)
+        {
+            if (_units.ContainsKey(unitId) == false)
+            {
+                Debug.LogError($"UnitVisual not found for {unitId}");
+                return new UnitVisual();
+            }
+            return _units[unitId];
         }
         
         public HeroMagicVisual GetHeroMagicVisual(HeroMagicId heroMagicId)
