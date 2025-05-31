@@ -1,16 +1,31 @@
+using System;
 using Game.Scripts.Data.Enums;
 using Game.Scripts.Data.Saves;
 using Game.Scripts.Helpers;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Game.Scripts.Data.Core.State
 {
+    [Serializable]
     public class HeroState
     {
+        [SerializeField][ReadOnly] private int _mana;
+        [SerializeField][ReadOnly] private int _health;
         public event System.Action<HeroState> EventChanged;
-        public int Mana { get; private set; }
-        public int Health { get; private set; }
-        
+
+        public int Mana
+        {
+            get => _mana;
+            private set => _mana = value;
+        }
+
+        public int Health
+        {
+            get => _health;
+            private set => _health = value;
+        }
+
         public int HeroMagicUseCount { get; set; }
         public HeroMagicId HeroMagicId { get; set; }
         public int HeroMagicLevel { get; set; }
