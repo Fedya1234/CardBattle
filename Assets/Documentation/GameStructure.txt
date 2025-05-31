@@ -1,7 +1,7 @@
 # Card Battle Game Structure
 
 ## Overview
-This is a card battler game similar to Hearthstone, currently in advanced prototype stage with core gameplay systems implemented. The game follows a traditional CCG (Collectible Card Game) structure with players drawing cards from a deck, playing them on a 3x3 grid board, and attempting to reduce the opponent's health to zero. Features multiple hero classes, sophisticated battle resolution, and a comprehensive save system.
+This is a card battler game similar to Hearthstone, currently in advanced prototype stage with core gameplay systems implemented. The game follows a traditional CCG (Collectible Card Game) structure with players drawing cards from a deck, playing them on a 3x3 grid board, and attempting to reduce the opponent's health to zero. Features multiple hero classes, sophisticated battle resolution with unit animations, and a comprehensive save system.
 
 ## Core Game Components
 
@@ -127,6 +127,18 @@ This is a card battler game similar to Hearthstone, currently in advanced protot
    - Board presence and unit power calculation
    - Card advantage and mana comparison
    - Returns normalized advantage score for AI decision making
+
+### UI System
+1. GameUI (GameUI.cs)
+   - Manages overall game UI, including card hand and board representation.
+   - Provides a static `Instance` for easy access from other systems.
+   - `GetBoardUnit(playerIndex, line, row)`: Retrieves the `BoardUnit` visual for a specific unit.
+   - `RemoveBoardUnit(BoardUnit)`: Immediately removes a `BoardUnit` from its tracking dictionary, typically upon death.
+
+2. BoardUnit (UI/Board/BoardUnit.cs)
+   - Visual representation of a unit on the board.
+   - Handles unit-specific animations like spawn, attack (shake), death (scale/rotate).
+   - `PlayAttackAnimation` and `PlayDeathAnimation` are asynchronous and return UniTask to allow sequencing.
 
 ### Save System
 1. Save Architecture
