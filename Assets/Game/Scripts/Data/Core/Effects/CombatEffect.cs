@@ -63,167 +63,236 @@ namespace Game.Scripts.Data.Core.Effects
         }
         
         /// <summary>
-        /// Processes all regular units concurrently to simulate simultaneous attacks
+        /// Processes all regular units concurrently to simulate simultaneous attacks at the same position
         /// </summary>
         private void ProcessRegularUnitsConcurrently(GameState gameState)
         {
-            // First collect all pending damage that will be applied simultaneously
+            // Process each line
+            for (int line = 0; line < 3; line++)
+            {
+                ProcessLineCombat(gameState, line);
+            }
+        }
+        
+        /// <summary>
+        /// Processes combat for an entire line, pairing units from both players
+        /// </summary>
+        private void ProcessLineCombat(GameState gameState, int line)
+        {
+            var player1State = gameState.GetState(0);
+            var player2State = gameState.GetState(1);
+            
+            // Get all active units in this line for both players
+            var player1Units = new List<(GameUnitData unit, int position)>();
+            var player2Units = new List<(GameUnitData unit, int position)>();
+            
+            for (int pos = 0; pos < 3; pos++)
+            {
+                var place1 = player1State.Board.GetPlace(line, pos);
+                var place2 = player2State.Board.GetPlace(line, pos);
+                
+                if (!place1.IsEmpty && !place1.Unit.UnitState.Skills.Contains(SkillId.FirstHit))
+                {
+                    player1Units.Add((place1.Unit, pos));
+                }
+                
+                if (!place2.IsEmpty && !place2.Unit.UnitState.Skills.Contains(SkillId.FirstHit))
+                {
+                    player2Units.Add((place2.Unit, pos));
+                }
+            }
+            
+            Debug.Log($"Line {line}: Player 1 has {player1Units.Count} units, Player 2 has {player2Units.Count} units");
+            
+            // Process units in pairs (first with first, second with second, etc.)
+            int maxUnits = Mathf.Max(player1Units.Count, player2Units.Count);
+            
+            for (int i = 0; i < maxUnits; i++)
+            {
+                GameUnitData unit1 = i < player1Units.Count ? player1Units[i].unit : null;
+                GameUnitData unit2 = i < player2Units.Count ? player2Units[i].unit : null;
+                
+                if (unit1 != null && unit2 != null)
+                {
+                    // Both units exist, simultaneous combat
+                    ProcessPairedCombat(gameState, unit1, unit2, 0, 1, line);
+                }
+                else if (unit1 != null)
+                {
+                    // Only player 1 unit exists
+                    ProcessSingleUnitAttack(gameState, unit1, 0, line);
+                }
+                else if (unit2 != null)
+                {
+                    // Only player 2 unit exists
+                    ProcessSingleUnitAttack(gameState, unit2, 1, line);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Processes simultaneous combat between two paired units
+        /// </summary>
+        private void ProcessPairedCombat(GameState gameState, GameUnitData unit1, GameUnitData unit2, int player1Index, int player2Index, int line)
+        {
+            Debug.Log($"Paired combat between players {player1Index} and {player2Index} at line {line}");
+            
             var pendingDamage = new List<PendingDamage>();
+            var player1State = gameState.GetState(player1Index);
+            var player2State = gameState.GetState(player2Index);
             
-            // Collect damage from player 1 units
-            CollectPendingDamage(gameState, 0, pendingDamage);
+            // Unit1 finds target in player2's line
+            var unit1Target = FindTargetInLine(gameState, player2Index, line);
+            if (unit1Target != null)
+            {
+                pendingDamage.Add(new PendingDamage {
+                    Attacker = unit1,
+                    Target = unit1Target.Unit,
+                    TargetPlace = unit1Target,
+                    TargetHero = null,
+                    Amount = unit1.UnitState.Damage
+                });
+                
+                if (unit1.UnitState.Skills.Contains(SkillId.DoubleDamage))
+                {
+                    pendingDamage.Add(new PendingDamage {
+                        Attacker = unit1,
+                        Target = unit1Target.Unit,
+                        TargetPlace = unit1Target,
+                        TargetHero = null,
+                        Amount = unit1.UnitState.Damage
+                    });
+                }
+            }
+            else
+            {
+                pendingDamage.Add(new PendingDamage {
+                    Attacker = unit1,
+                    Target = null,
+                    TargetPlace = null,
+                    TargetHero = player2State.Hero,
+                    Amount = unit1.UnitState.Damage
+                });
+                
+                if (unit1.UnitState.Skills.Contains(SkillId.DoubleDamage))
+                {
+                    pendingDamage.Add(new PendingDamage {
+                        Attacker = unit1,
+                        Target = null,
+                        TargetPlace = null,
+                        TargetHero = player2State.Hero,
+                        Amount = unit1.UnitState.Damage
+                    });
+                }
+            }
             
-            // Collect damage from player 2 units
-            CollectPendingDamage(gameState, 1, pendingDamage);
+            // Unit2 finds target in player1's line
+            var unit2Target = FindTargetInLine(gameState, player1Index, line);
+            if (unit2Target != null)
+            {
+                pendingDamage.Add(new PendingDamage {
+                    Attacker = unit2,
+                    Target = unit2Target.Unit,
+                    TargetPlace = unit2Target,
+                    TargetHero = null,
+                    Amount = unit2.UnitState.Damage
+                });
+                
+                if (unit2.UnitState.Skills.Contains(SkillId.DoubleDamage))
+                {
+                    pendingDamage.Add(new PendingDamage {
+                        Attacker = unit2,
+                        Target = unit2Target.Unit,
+                        TargetPlace = unit2Target,
+                        TargetHero = null,
+                        Amount = unit2.UnitState.Damage
+                    });
+                }
+            }
+            else
+            {
+                pendingDamage.Add(new PendingDamage {
+                    Attacker = unit2,
+                    Target = null,
+                    TargetPlace = null,
+                    TargetHero = player1State.Hero,
+                    Amount = unit2.UnitState.Damage
+                });
+                
+                if (unit2.UnitState.Skills.Contains(SkillId.DoubleDamage))
+                {
+                    pendingDamage.Add(new PendingDamage {
+                        Attacker = unit2,
+                        Target = null,
+                        TargetPlace = null,
+                        TargetHero = player1State.Hero,
+                        Amount = unit2.UnitState.Damage
+                    });
+                }
+            }
             
-            // Apply all damage at once after collection
+            // Apply all damage simultaneously
             ApplyAllPendingDamage(pendingDamage);
-            
-            // Apply secondary effects (like vampirism) and handle deaths
             ApplySecondaryEffects(pendingDamage);
         }
         
         /// <summary>
-        /// Collects pending damage from all regular units for a player
+        /// Processes attack for a single unit when no opponent exists at the same position
         /// </summary>
-        private void CollectPendingDamage(GameState gameState, int playerIndex, List<PendingDamage> pendingDamage)
+        private void ProcessSingleUnitAttack(GameState gameState, GameUnitData attacker, int attackerPlayerIndex, int line)
+        {
+            int opponentIndex = 1 - attackerPlayerIndex;
+            var opponentState = gameState.GetState(opponentIndex);
+            
+            Debug.Log($"Single unit attack from player {attackerPlayerIndex} at line {line}");
+            
+            // Find target in opponent's line
+            var targetPlace = FindTargetInLine(gameState, opponentIndex, line);
+            
+            if (targetPlace != null)
+            {
+                // Target found, attack it
+                Debug.Log($"Target found in line {line} for player {attackerPlayerIndex}");
+                DealDamage(attacker, targetPlace, opponentState.Hero);
+                
+                // Handle double damage
+                if (attacker.UnitState.Skills.Contains(SkillId.DoubleDamage))
+                {
+                    DealDamage(attacker, targetPlace, opponentState.Hero);
+                }
+            }
+            else
+            {
+                // No target found, attack hero
+                Debug.Log($"No targets in line {line}, player {attackerPlayerIndex} attacks hero");
+                DealDamage(attacker, null, opponentState.Hero);
+                
+                // Handle double damage
+                if (attacker.UnitState.Skills.Contains(SkillId.DoubleDamage))
+                {
+                    DealDamage(attacker, null, opponentState.Hero);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Finds the first living target in the specified player's line
+        /// </summary>
+        private GameBoardPlace FindTargetInLine(GameState gameState, int playerIndex, int line)
         {
             var playerState = gameState.GetState(playerIndex);
             
-            // Iterate through all board positions
             for (int row = 0; row < 3; row++)
             {
-                for (int line = 0; line < 3; line++)
-                {
-                    var place = playerState.Board.GetPlace(line, row);
-                    
-                    // Skip empty places or units with FirstHit (already processed)
-                    if (place.IsEmpty || place.Unit.UnitState.Skills.Contains(SkillId.FirstHit))
-                        continue;
-                    
-                    // Calculate potential damage from this unit
-                    CalculateDamage(gameState, place.Unit, playerIndex, line, row, pendingDamage);
-                    
-                    // Handle double damage if applicable
-                    if (place.Unit.UnitState.Skills.Contains(SkillId.DoubleDamage))
-                    {
-                        CalculateDamage(gameState, place.Unit, playerIndex, line, row, pendingDamage);
-                    }
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Calculates the damage that will be dealt by a unit
-        /// </summary>
-        private void CalculateDamage(
-            GameState gameState, 
-            GameUnitData attacker, 
-            int attackerPlayerIndex, 
-            int attackerLine, 
-            int attackerRow, 
-            List<PendingDamage> pendingDamage)
-        {
-            int opponentIndex = 1 - attackerPlayerIndex; // 0 -> 1, 1 -> 0
-            var opponentState = gameState.GetState(opponentIndex);
-            
-            Debug.Log($"Unit at position (line:{attackerLine}, row:{attackerRow}) from player {attackerPlayerIndex} is calculating damage in line {attackerLine}");
-            
-            // Try to find a target in the same line (vertical column)
-            for (int targetRow = 0; targetRow < 3; targetRow++)
-            {
-                var targetPlace = opponentState.Board.GetPlace(attackerLine, targetRow);
+                var place = playerState.Board.GetPlace(line, row);
                 
-                if (!targetPlace.IsEmpty)
+                if (!place.IsEmpty && place.Unit.UnitState.Health > 0)
                 {
-                    // Target found, prepare damage
-                    var pendingDamageToThisTarget = pendingDamage
-                        .Where(d => d.TargetPlace == targetPlace)
-                        .Sum(d => d.Amount);
-                    
-                    if (pendingDamageToThisTarget >= targetPlace.Unit.UnitState.Health)
-                    {
-                        // If this unit's damage would kill the target, skip it
-                        Debug.Log($"Skipping attack on target at (line:{attackerLine}, row:{targetRow}) - already lethal damage pending");
-                        continue;
-                    }
-                        
-                    Debug.Log($"Target found at position (line:{attackerLine}, row:{targetRow}) for player {opponentIndex}");
-                    
-                    pendingDamage.Add(new PendingDamage {
-                        Attacker = attacker,
-                        Target = targetPlace.Unit,
-                        TargetPlace = targetPlace,
-                        TargetHero = null,
-                        Amount = attacker.UnitState.Damage
-                    });
-                    
-                    // Found a target, so stop searching
-                    return;
+                    return place;
                 }
             }
             
-            // If no target found in the same line, damage goes to hero
-            Debug.Log($"No targets in line {attackerLine}, preparing attack on hero of player {opponentIndex}");
-            
-            pendingDamage.Add(new PendingDamage {
-                Attacker = attacker,
-                Target = null,
-                TargetPlace = null,
-                TargetHero = opponentState.Hero,
-                Amount = attacker.UnitState.Damage
-            });
-        }
-        
-        /// <summary>
-        /// Apply all pending damage simultaneously
-        /// </summary>
-        private void ApplyAllPendingDamage(List<PendingDamage> pendingDamage)
-        {
-            foreach (var damage in pendingDamage)
-            {
-                if (damage.TargetHero != null)
-                {
-                    // Apply damage to hero
-                    damage.TargetHero.ChangeHealth(-damage.Amount);
-                    Debug.Log($"Unit deals {damage.Amount} damage to hero");
-                }
-                else if (damage.Target != null)
-                {
-                    // Apply damage to unit
-                    damage.Target.UnitState.AddHealth(-damage.Amount);
-                    Debug.Log($"Unit deals {damage.Amount} damage to unit");
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Apply secondary effects and handle deaths after damage has been applied
-        /// </summary>
-        private void ApplySecondaryEffects(List<PendingDamage> pendingDamage)
-        {
-            foreach (var damage in pendingDamage)
-            {
-                // Skip if target was hero
-                if (damage.Target == null)
-                    continue;
-                
-                // Check for vampirism
-                if (damage.Attacker.UnitState.Skills.Contains(SkillId.Vampire))
-                {
-                    // Heal the attacker for the damage dealt
-                    int healAmount = Mathf.Min(damage.Amount, damage.Amount); // Could be modified if we track actual damage taken
-                    damage.Attacker.UnitState.AddHealth(healAmount);
-                    Debug.Log($"Unit heals for {healAmount} with vampirism");
-                }
-                
-                // Check if target died
-                if (damage.Target.UnitState.Health <= 0 && damage.TargetPlace != null)
-                {
-                    damage.TargetPlace.KillUnit(damage.Target);
-                    Debug.Log("Unit died from combat damage");
-                }
-            }
+            return null;
         }
         
         /// <summary>
@@ -291,6 +360,57 @@ namespace Game.Scripts.Data.Core.Effects
                 if (targetUnit.UnitState.Health <= 0)
                 {
                     targetPlace.KillUnit(targetUnit);
+                    Debug.Log("Unit died from combat damage");
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Apply all pending damage simultaneously
+        /// </summary>
+        private void ApplyAllPendingDamage(List<PendingDamage> pendingDamage)
+        {
+            foreach (var damage in pendingDamage)
+            {
+                if (damage.TargetHero != null)
+                {
+                    // Apply damage to hero
+                    damage.TargetHero.ChangeHealth(-damage.Amount);
+                    Debug.Log($"Unit deals {damage.Amount} damage to hero");
+                }
+                else if (damage.Target != null)
+                {
+                    // Apply damage to unit
+                    damage.Target.UnitState.AddHealth(-damage.Amount);
+                    Debug.Log($"Unit deals {damage.Amount} damage to unit");
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Apply secondary effects and handle deaths after damage has been applied
+        /// </summary>
+        private void ApplySecondaryEffects(List<PendingDamage> pendingDamage)
+        {
+            foreach (var damage in pendingDamage)
+            {
+                // Skip if target was hero
+                if (damage.Target == null)
+                    continue;
+                
+                // Check for vampirism
+                if (damage.Attacker.UnitState.Skills.Contains(SkillId.Vampire))
+                {
+                    // Heal the attacker for the damage dealt
+                    int healAmount = Mathf.Min(damage.Amount, damage.Amount); // Could be modified if we track actual damage taken
+                    damage.Attacker.UnitState.AddHealth(healAmount);
+                    Debug.Log($"Unit heals for {healAmount} with vampirism");
+                }
+                
+                // Check if target died
+                if (damage.Target.UnitState.Health <= 0 && damage.TargetPlace != null)
+                {
+                    damage.TargetPlace.KillUnit(damage.Target);
                     Debug.Log("Unit died from combat damage");
                 }
             }
