@@ -16,7 +16,6 @@ namespace Game.Scripts.Core
         private const int StartCardsCount = 4;
         private List<BaseMoveController> _moveControllers = new ();
         private GameState _gameState;
-        private int _currentRound;
         private BattleResolver _battleResolver;
         private bool _gameEnded = false;
         
@@ -29,7 +28,6 @@ namespace Game.Scripts.Core
         
         public GameSession(PlayerSave[] players)
         {
-            _currentRound = 0;
             _gameState = new GameState(players, PlayerIndex);
             
             _moveControllers.Add(new PlayerMoveController(0));
@@ -98,8 +96,8 @@ namespace Game.Scripts.Core
             if (_gameEnded)
                 return;
             
-            _currentRound++;
-            Debug.Log($"Starting round {_currentRound}");
+            _gameState.Round++;
+            Debug.Log($"Starting round {_gameState.Round}");
             
             // Increment mana for each player (up to max 9)
             foreach (var player in _gameState.Players)
