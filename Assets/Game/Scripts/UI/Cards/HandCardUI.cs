@@ -178,9 +178,10 @@ namespace Game.Scripts.UI.Cards
                 return;
                 
             _isDragging = true;
-            _originalPosition = transform.position;
+            //_originalPosition = transform.position;
             _originalParent = transform.parent;
             
+            transform.SetParent(_parentCanvas.transform, true);
             // Делаем карту полупрозрачной
             if (_canvasGroup != null)
                 _canvasGroup.alpha = 0.6f;
@@ -239,7 +240,7 @@ namespace Game.Scripts.UI.Cards
             }
             
             // Возвращаем карту в исходную позицию
-            transform.position = _originalPosition;
+            //transform.position = _originalPosition;
             transform.SetParent(_originalParent);
         }
         
