@@ -185,10 +185,18 @@ namespace Game.Scripts.Core
       {
         // For global effects like combat, we just pass 0,0,0 as positions
         // The effect itself will iterate over the whole board
-        effect.ApplyEffect(gameState, 0, 0, 0);
+        bool success = effect.ApplyEffect(gameState, 0, 0, 0);
+        if (success)
+        {
+          Debug.Log($"Successfully applied effect of type {effectType}");
+        }
+        else
+        {
+          Debug.LogWarning($"Failed to apply effect of type {effectType}");
+        }
                 
-        // Add delay for visual feedback (not necessary in this implementation)
-        await UniTask.Delay(100);
+        // Add delay for visual feedback
+        await UniTask.Delay(250);
       }
             
       // Apply passive effects on units

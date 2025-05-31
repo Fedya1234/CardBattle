@@ -21,75 +21,114 @@ namespace Game.Scripts.Data.Core.Effects
             int sourceLine,
             int sourceRow)
         {
-            // Combat happens across all rows and lines
-            for (int line = 0; line < 3; line++)
-            {
-                for (int row = 0; row < 3; row++)
-                {
-                    ProcessCombat(gameState, line, row);
-                }
-            }
+            // First, process units with FirstHit skill for both players
+            ProcessFirstHitUnits(gameState, 0); // Player 1 first hit units
+            ProcessFirstHitUnits(gameState, 1); // Player 2 first hit units
+            
+            // Then process regular units for both players
+            ProcessRegularUnits(gameState, 0); // Player 1 regular units
+            ProcessRegularUnits(gameState, 1); // Player 2 regular units
             
             return true;
         }
         
-        private void ProcessCombat(GameState gameState, int line, int row)
+        /// <summary>
+        /// Processes all units with FirstHit for a player
+        /// </summary>
+        private void ProcessFirstHitUnits(GameState gameState, int playerIndex)
         {
-            var player1 = gameState.GetState(0);
-            var player2 = gameState.GetState(1);
+            var playerState = gameState.GetState(playerIndex);
             
-            var place1 = player1.Board.GetPlace(line, row);
-            var place2 = player2.Board.GetPlace(line, row);
-            
-            if (place1.IsEmpty && place2.IsEmpty)
+            // Iterate through all board positions
+            for (int row = 0; row < 3; row++)
             {
-                // No units to fight
-                return;
-            }
-            
-            // Process units with FirstHit first
-            if (!place1.IsEmpty && place1.Unit.UnitState.Skills.Contains(SkillId.FirstHit))
-            {
-                // Player 1 unit attacks first
-                DealDamage(place1.Unit, place2, player2.Hero);
-            }
-            
-            if (!place2.IsEmpty && place2.Unit.UnitState.Skills.Contains(SkillId.FirstHit))
-            {
-                // Player 2 unit attacks first
-                DealDamage(place2.Unit, place1, player1.Hero);
-            }
-            
-            // Regular attack from player 1
-            if (!place1.IsEmpty && !place1.Unit.UnitState.Skills.Contains(SkillId.FirstHit))
-            {
-                DealDamage(place1.Unit, place2, player2.Hero);
-                
-                // Handle double damage
-                if (!place1.IsEmpty && place1.Unit.UnitState.Skills.Contains(SkillId.DoubleDamage))
+                for (int line = 0; line < 3; line++)
                 {
-                    DealDamage(place1.Unit, place2, player2.Hero);
+                    var place = playerState.Board.GetPlace(line, row);
+                    
+                    // Skip empty places or units without FirstHit
+                    if (place.IsEmpty || !place.Unit.UnitState.Skills.Contains(SkillId.FirstHit))
+                        continue;
+                    
+                    // Handle attack for this unit
+                    AttackInLine(gameState, place.Unit, playerIndex, line, row);
+                    
+                    // Handle double damage if applicable
+                    if (place.Unit.UnitState.Skills.Contains(SkillId.DoubleDamage))
+                    {
+                        AttackInLine(gameState, place.Unit, playerIndex, line, row);
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Processes all regular units (without FirstHit) for a player
+        /// </summary>
+        private void ProcessRegularUnits(GameState gameState, int playerIndex)
+        {
+            var playerState = gameState.GetState(playerIndex);
+            
+            // Iterate through all board positions
+            for (int row = 0; row < 3; row++)
+            {
+                for (int line = 0; line < 3; line++)
+                {
+                    var place = playerState.Board.GetPlace(line, row);
+                    
+                    // Skip empty places or units with FirstHit (already processed)
+                    if (place.IsEmpty || place.Unit.UnitState.Skills.Contains(SkillId.FirstHit))
+                        continue;
+                    
+                    // Handle attack for this unit
+                    AttackInLine(gameState, place.Unit, playerIndex, line, row);
+                    
+                    // Handle double damage if applicable
+                    if (place.Unit.UnitState.Skills.Contains(SkillId.DoubleDamage))
+                    {
+                        AttackInLine(gameState, place.Unit, playerIndex, line, row);
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Handles an attack from a unit, targeting enemies in the same row from front to back
+        /// </summary>
+        private void AttackInLine(GameState gameState, GameUnitData attacker, int attackerPlayerIndex, int attackerLine, int attackerRow)
+        {
+            int opponentIndex = 1 - attackerPlayerIndex; // 0 -> 1, 1 -> 0
+            var opponentState = gameState.GetState(opponentIndex);
+            
+            Debug.Log($"Unit at position (line:{attackerLine}, row:{attackerRow}) from player {attackerPlayerIndex} is attacking in row {attackerRow}");
+            
+            // Try to find a target in the same row (attackerRow)
+            // We look at all columns (lines) for the opponent in the same row
+            for (int targetRow = 0; targetRow < 3; targetRow++)
+            {
+                var targetPlace = opponentState.Board.GetPlace(attackerLine, targetRow);
+                
+                if (!targetPlace.IsEmpty)
+                {
+                    // Target found, deal damage
+                    Debug.Log($"Target found at position (line:{attackerLine}, row:{targetRow}) for player {opponentIndex}");
+                    DealDamage(attacker, targetPlace, opponentState.Hero);
+                    
+                    // Found a target, so stop searching
+                    return;
                 }
             }
             
-            // Regular attack from player 2
-            if (!place2.IsEmpty && !place2.Unit.UnitState.Skills.Contains(SkillId.FirstHit))
-            {
-                DealDamage(place2.Unit, place1, player1.Hero);
-                
-                // Handle double damage
-                if (!place2.IsEmpty && place2.Unit.UnitState.Skills.Contains(SkillId.DoubleDamage))
-                {
-                    DealDamage(place2.Unit, place1, player1.Hero);
-                }
-            }
+            // If no target found in the same row, damage the hero
+            Debug.Log($"No targets in line {attackerLine}, attacking hero of player {opponentIndex}");
+            DealDamage(attacker, null, opponentState.Hero);
         }
         
         private void DealDamage(GameUnitData attacker, GameBoardPlace targetPlace, HeroState targetHero)
         {
             int damage = attacker.UnitState.Damage;
             
-            if (targetPlace.IsEmpty)
+            if (targetPlace == null || targetPlace.IsEmpty)
             {
                 // No unit, damage goes to hero
                 targetHero.ChangeHealth(-damage);

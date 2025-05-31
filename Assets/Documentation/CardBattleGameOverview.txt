@@ -27,7 +27,7 @@ Card Battler Game Specification
    2. Negative spell effects (damage, debuffs)
    3. Passive abilities that trigger “At start of turn”
    4. Combat phase – units fight:
-      - Units attack only enemies in the same horizontal row: Front → Middle → Back.
+      - Units attack only enemies in the same horizontal line: Front → Middle → Back.
       - If all enemy cells in that row are empty → damage is dealt to the enemy hero.
       - If the hero reaches 0 HP → that player loses.
 
