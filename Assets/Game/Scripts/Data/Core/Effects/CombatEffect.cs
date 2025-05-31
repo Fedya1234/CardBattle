@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Game.Scripts.Data.Core.State;
 using Game.Scripts.Data.Core.Units;
 using Game.Scripts.Data.Enums;
@@ -136,6 +137,17 @@ namespace Game.Scripts.Data.Core.Effects
                 if (!targetPlace.IsEmpty)
                 {
                     // Target found, prepare damage
+                    var pendingDamageToThisTarget = pendingDamage
+                        .Where(d => d.TargetPlace == targetPlace)
+                        .Sum(d => d.Amount);
+                    
+                    if (pendingDamageToThisTarget >= targetPlace.Unit.UnitState.Health)
+                    {
+                        // If this unit's damage would kill the target, skip it
+                        Debug.Log($"Skipping attack on target at (line:{attackerLine}, row:{targetRow}) - already lethal damage pending");
+                        continue;
+                    }
+                        
                     Debug.Log($"Target found at position (line:{attackerLine}, row:{targetRow}) for player {opponentIndex}");
                     
                     pendingDamage.Add(new PendingDamage {
