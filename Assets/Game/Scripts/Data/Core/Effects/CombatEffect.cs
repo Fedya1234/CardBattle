@@ -766,6 +766,8 @@ namespace Game.Scripts.Data.Core.Effects
 
         private async UniTask ApplySecondaryEffectsAsync(GameState gameState, List<PendingDamage> pendingDamage)
         {
+            var deathAnimations = new List<UniTask>();
+            
             foreach (var damage in pendingDamage)
             {
                 // Skip if target was hero
@@ -791,13 +793,20 @@ namespace Game.Scripts.Data.Core.Effects
                     var boardUnit = GetBoardUnitByPlace(gameState, damage.TargetPlace, targetPlayerIndex);
                     if (boardUnit != null)
                     {
-                        await boardUnit.PlayDeathAnimation();
+                        // Add death animation to the list instead of awaiting immediately
+                        deathAnimations.Add(boardUnit.PlayDeathAnimation());
                         // Remove from GameUI's dictionary immediately
                         GameUI.Instance?.RemoveBoardUnit(boardUnit);
                     }
                     
                     damage.TargetPlace.KillUnit(damage.Target);
                 }
+            }
+            
+            // Wait for all death animations to complete simultaneously
+            if (deathAnimations.Count > 0)
+            {
+                await UniTask.WhenAll(deathAnimations);
             }
         }
         
