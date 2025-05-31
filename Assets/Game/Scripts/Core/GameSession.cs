@@ -74,11 +74,12 @@ namespace Game.Scripts.Core
                 chooseCards.Add(moveController.ChooseCards(startCards));
             }
             
-            await UniTask.WhenAll(chooseCards);
+            // Store the results in a variable to avoid awaiting twice
+            var results = await UniTask.WhenAll(chooseCards);
             
-            foreach (var task in chooseCards)
+            // Process the results directly
+            foreach (var reply in results)
             {
-                var reply = await task;
                 OnPlayerCardsChosen(reply);
             }
             
@@ -128,10 +129,12 @@ namespace Game.Scripts.Core
             var player1MoveTask = _moveControllers[0].MakeMove();
             var player2MoveTask = _moveControllers[1].MakeMove();
             
-            await UniTask.WhenAll(player1MoveTask, player2MoveTask);
+            // Store the results instead of awaiting twice
+            var results = await UniTask.WhenAll(player1MoveTask, player2MoveTask);
             
-            var player1Move = await player1MoveTask;
-            var player2Move = await player2MoveTask;
+            // Access the results from the array returned by WhenAll
+            var player1Move = results.Item1;
+            var player2Move = results.Item2;
             
             // Apply the moves to the game state
             OnPlayerMove(player1Move.Move, player1Move.Index);

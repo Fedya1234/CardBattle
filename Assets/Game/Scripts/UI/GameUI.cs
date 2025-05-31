@@ -337,6 +337,13 @@ namespace Game.Scripts.UI
     
     private void UpdateBoardUnits(GameState gameState)
     {
+      // Проверка на null для избежания NullReferenceException
+      if (gameState == null || gameState.GetMyState() == null || gameState.GetMyState().Board == null)
+      {
+          Debug.LogWarning("GameUI: Cannot update board units - game state or board is null");
+          return;
+      }
+
       // Обновляем юнитов на поле на основе BoardState
       for (int line = 0; line < 3; line++)
       {

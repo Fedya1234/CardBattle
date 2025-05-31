@@ -47,13 +47,28 @@ namespace Game.Scripts.Data.Core.State
                 if (handCard == null)
                 {
                     Debug.LogError($"HandCard not found {cardMove.Card.Id} level = {cardMove.Card.Level}");
+                    Debug.LogError($"Available hand cards: {string.Join(", ", HandCards.Select(c => $"{c.Id}:{c.Level}"))}");
                     continue;
                 }
 
                 HandCards.Remove(handCard);
                 Discard.Add(handCard);
-
-                
+            }
+            
+            // Apply burned card for mana
+            if (changes.BurnedForManaCard != null)
+            {
+                var burnedCard = HandCard(changes.BurnedForManaCard);
+                if (burnedCard != null)
+                {
+                    HandCards.Remove(burnedCard);
+                    Discard.Add(burnedCard);
+                    Debug.Log($"Burned card {burnedCard.Id} for mana");
+                }
+                else
+                {
+                    Debug.LogError($"Could not find burned card {changes.BurnedForManaCard.Id} level = {changes.BurnedForManaCard.Level} in hand");
+                }
             }
         }
 
@@ -66,7 +81,14 @@ namespace Game.Scripts.Data.Core.State
 
         private CardLevel HandCard(CardLevel card)
         {
-            return HandCards.FirstOrDefault(handCard => handCard.Equals(card));
+            // First try exact match
+            var exactMatch = HandCards.FirstOrDefault(handCard => handCard.Equals(card));
+            if (exactMatch != null)
+                return exactMatch;
+                
+            // If no exact match, try matching by ID and Level
+            return HandCards.FirstOrDefault(handCard => 
+                handCard.Id == card.Id && handCard.Level == card.Level);
         }
         
         private List<CardLevel> GetCards(PlayerSave save)

@@ -7,6 +7,7 @@ using Game.Scripts.Data.Core.Move;
 using Game.Scripts.Data.Core.State;
 using Game.Scripts.Data.Core.Units;
 using Game.Scripts.Data.Enums;
+using Game.Scripts.Helpers;
 using UnityEngine;
 
 namespace Game.Scripts.Core
@@ -75,11 +76,12 @@ namespace Game.Scripts.Core
                 
         // Try to get the card data from static data
         ICardEffect cardEffect = null;
-                
+
+        var cardVisual = VisualService.GetCardTypeId(cardId);
         // Determine effect based on card type
-        switch (cardId)
+        switch (cardVisual)
         {
-          case CardId.Card_0:
+          case CardTypeId.Unit:
             // Example: Unit card
             var unitData = new Data.Core.Units.UnitData
             {
@@ -89,12 +91,7 @@ namespace Game.Scripts.Core
             cardEffect = _effectFactory.CreateUnitPlacementEffect(cardId, unitData);
             break;
                 
-          case CardId.Card_1:
-            // Example: Damage spell
-            cardEffect = _effectFactory.CreateMagicEffect(cardId);
-            break;
-                
-          case CardId.Card_2:
+          case CardTypeId.Magic:
             // Example: Buff spell - use magic effect factory
             cardEffect = _effectFactory.CreateMagicEffect(cardId);
             break;

@@ -44,6 +44,18 @@ namespace Game.Scripts.Data.Visual
             
             return cardVisual as UnitCardVisual;
         }
+        
+        public CardTypeId GetCardTypeId(CardId cardId)
+        {
+            var cardVisual = GetCardVisual(cardId);
+            if (cardVisual == null)
+            {
+                Debug.LogError($"CardVisual not found for {cardId}");
+                return default;
+            }
+            
+            return cardVisual.Type;
+        }
 
         public MagicCardVisual GetMagicCardVisual(CardId cardId)
         {

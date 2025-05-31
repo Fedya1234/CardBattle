@@ -39,6 +39,18 @@ namespace Game.Scripts.Helpers
             }
         }
         
+        public static CardTypeId GetCardTypeId(CardId cardId)
+        {
+            // Check if we have visual data cached
+            if (_visualData == null)
+            {
+                Debug.LogError("VisualStaticData is not loaded!");
+                return default;
+            }
+            
+            // Use the private method from VisualStaticData through appropriate accessor
+            return _visualData.GetCardTypeId(cardId);
+        }
         /// <summary>
         /// Gets general card visual data for the specified card ID
         /// </summary>

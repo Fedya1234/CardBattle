@@ -112,36 +112,83 @@ namespace Game.Scripts.Core.MoveControllers
         {
             var move = new PlayerMove();
 
-            // In a full implementation, this would use the game state to make intelligent decisions
+            // Get bot's current hand cards from game state
+            if (_lastKnownGameState == null)
+            {
+                Debug.LogWarning("BotMoveController: No game state available, returning empty move");
+                return move;
+            }
 
-            // Bot plays 1-3 cards
-            int cardsToPlay = Random.Range(1, 4);
+            var botState = _lastKnownGameState.GetState(Index);
+            var handCards = botState.Cards.HandCards;
+
+            if (handCards == null || handCards.Count == 0)
+            {
+                Debug.LogWarning($"BotMoveController: Bot {Index} has no cards in hand");
+                return move;
+            }
+
+            // Decide how many cards to play (1 to min(3, available cards))
+            int maxCardsToPlay = Mathf.Min(3, handCards.Count);
+            int cardsToPlay = Random.Range(1, maxCardsToPlay + 1);
+
+            // Shuffle hand cards for random selection
+            var shuffledCards = handCards.OrderBy(_ => Random.value).ToList();
 
             for (int i = 0; i < cardsToPlay; i++)
             {
-                // Try to place units strategically - favor the middle row
+                var cardToPlay = shuffledCards[i];
+                
+                // Check if bot has enough mana to play this card
+                if (botState.Hero.Mana < cardToPlay.GetManaCost())
+                {
+                    Debug.Log($"BotMoveController: Not enough mana to play card {cardToPlay.Id} (cost: {cardToPlay.GetManaCost()}, available: {botState.Hero.Mana})");
+                    continue;
+                }
+
+                // Try to place the card strategically - favor the middle row
                 int row = GetWeightedRandomRow();
                 int line = Random.Range(0, 3);
 
-                var cardMove = new CardMove(
-                    new CardLevel(
-                        (CardId)Random.Range(0, 3), // Random card ID (0-2)
-                        1),                        // Level 1
-                    line,
-                    row,
-                    Index
-                );
+                // Check if position is free
+                if (!botState.Board.GetPlace(line, row).IsEmpty)
+                {
+                    // Try to find an empty spot
+                    bool foundSpot = false;
+                    for (int tryLine = 0; tryLine < 3 && !foundSpot; tryLine++)
+                    {
+                        for (int tryRow = 0; tryRow < 3 && !foundSpot; tryRow++)
+                        {
+                            if (botState.Board.GetPlace(tryLine, tryRow).IsEmpty)
+                            {
+                                line = tryLine;
+                                row = tryRow;
+                                foundSpot = true;
+                            }
+                        }
+                    }
+                    
+                    if (!foundSpot)
+                    {
+                        Debug.Log("BotMoveController: No empty spots on board for card placement");
+                        continue;
+                    }
+                }
 
+                var cardMove = new CardMove(cardToPlay, line, row, Index);
                 move.AddCard(cardMove);
+                
+                // Reduce available mana for next card consideration
+                botState.Hero.ChangeMana(-cardToPlay.GetManaCost());
             }
 
             // Randomly decide whether to burn a card for mana (30% chance)
-            if (Random.value < 0.3f)
+            // Only if we have cards left and didn't play all cards
+            var remainingCards = handCards.Where(c => !move.Cards.Any(mc => mc.Card.Id == c.Id && mc.Card.Level == c.Level)).ToList();
+            if (remainingCards.Count > 0 && Random.value < 0.3f)
             {
-                move.BurnCardForMana(new CardLevel(
-                    (CardId)Random.Range(0, 3),
-                    1
-                ));
+                var cardToBurn = remainingCards[Random.Range(0, remainingCards.Count)];
+                move.BurnCardForMana(cardToBurn);
             }
 
             return move;

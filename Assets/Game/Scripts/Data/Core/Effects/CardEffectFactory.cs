@@ -30,7 +30,7 @@ namespace Game.Scripts.Data.Core.Effects
         /// </summary>
         public ICardEffect CreateMagicEffect(CardId cardId)
         {
-            var magicCardVisual = VisualService.GetMagicCardVisual(cardId);
+            //var magicCardVisual = VisualService.GetMagicCardVisual(cardId);
             
             // Try to determine magic ID based on card ID
             MagicId magicId = DetermineMagicId(cardId);
