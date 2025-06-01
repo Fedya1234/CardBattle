@@ -216,6 +216,7 @@ namespace Game.Scripts.UI.Cards
             _originalPosition = transform.position;
             _originalParent = transform.parent;
             
+            transform.SetParent(_parentCanvas.transform, true);
             // Делаем карту полупрозрачной при перетаскивании
             if (_canvasGroup != null)
             {
@@ -292,24 +293,14 @@ namespace Game.Scripts.UI.Cards
 
         private void ReturnToOriginalPosition()
         {
-            // transform.DOMove(_originalPosition, 0.2f)
-            //     .SetEase(Ease.OutQuad)
-            //     .OnComplete(() =>
-            //     {
-            //         // Если родитель изменился, восстанавливаем
-            //         if (transform.parent != _originalParent)
-            //             transform.SetParent(_originalParent);
-            //     });
-            //     
-            // Если родитель изменился, восстанавливаем
-            if (transform.parent != _originalParent)
-                transform.SetParent(_originalParent);
-                
-            // Альтернатива для DOTween:
-            
             transform.DOMove(_originalPosition, 0.2f)
-                .SetEase(Ease.OutQuad);
-            
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() =>
+                {
+                    // Если родитель изменился, восстанавливаем
+                    if (transform.parent != _originalParent)
+                        transform.SetParent(_originalParent);
+                });
         }
         
         private void PlayPlacementAnimation(Action onComplete)

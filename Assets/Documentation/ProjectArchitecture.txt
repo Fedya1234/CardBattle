@@ -1,0 +1,105 @@
+// ProjectArchitecture.txt
+// This is a documentation file, not meant to be compiled or used in the project.
+// It serves as reference documentation only.
+
+/*
+# Game Project Architecture Documentation
+
+## Project Overview
+This is a turn-based card strategy game built in Unity where players place unit cards on a 3x3 grid, manage resources, and engage in tactical combat. The game features a complete battle resolution system, card effects, hero classes, and an event-driven architecture.
+
+## Core Architecture
+
+### Design Patterns & Principles
+- **MVC-like separation**: Game logic (`Core`), data state (`Data`), and presentation (`UI`)
+- **Event-driven communication** between systems
+- **Factory pattern** for card effects
+- **Service locator pattern** for accessing game services
+- **Command pattern** for move execution
+
+### Code Organization
+- **Namespacing**: `Game.Scripts.[Category]` follows directory structure
+- **Categories**: Core, Data, UI, Services, Utils
+
+### Naming Conventions
+- `_camelCase` with underscore prefix for private fields
+- `PascalCase` for public properties, methods, and classes
+- `Base` prefix for abstract classes (e.g., `BaseMoveController`)
+- Standard C# event naming (e.g., `OnGameStateUpdated`)
+
+## Key Systems
+
+### Core Game Systems
+1. **GameSession**: Central game controller managing game flow
+2. **MoveController**: Handles player input and AI moves
+   - `PlayerMoveController`: Human player interaction
+   - `AIMoveController`: Computer opponent logic
+3. **BattleResolver**: Executes combat with phased resolution
+4. **CardEffectSystem**: Handles card abilities and effects
+5. **HeroSystem**: Manages hero abilities and stats
+
+### Data Management
+1. **GameState**: Current state including board, players, cards
+2. **PlayerState**: Individual player data (hero, cards, resources)
+3. **UnitData**: Stats and abilities for units
+4. **CardLevel**: Card information including level-based stats
+5. **SaveSystem**: Persistence using PlayerPrefs with caching
+
+### UI Systems
+1. **GameUI**: Main interface controller
+2. **BoardUnit**: Visual representation of units on board
+3. **BoardTile**: Interactive board positions
+4. **GhostUnit**: Preview for card placement
+5. **HandCardUI**: Card representation in player's hand
+
+## Game Flow
+1. **Turn Structure**:
+   - Player receives cards and mana
+   - Places cards on board and/or burns for mana
+   - Confirms move, triggering battle resolution
+   - Turn passes to opponent
+   
+2. **Card Placement Logic**:
+   - Player selects card from hand
+   - Creates ghost preview on valid board positions
+   - Confirms placement or cancels
+   - Card is committed when turn ends
+
+3. **Combat Resolution**:
+   - Units attack based on position and stats
+   - Effects trigger in predefined order
+   - Animations play sequentially with UniTask coordination
+   - Death animations run before board updates
+
+## Technical Implementation
+
+### Asynchronous Programming
+- Consistent use of UniTask for all async operations
+- Animation sequences coordinated through async/await
+- Phased execution of game effects
+
+### Performance Optimization
+- Extensive caching of frequently accessed data
+- Static data access through centralized services
+- Object pooling for frequently instantiated elements
+
+### Dependencies
+- UniTask for async/await pattern
+- DOTween for animations
+- Sirenix.OdinInspector for editor tools
+- Unity's built-in UI system
+
+## Development Roadmap
+1. UI components for card interactions
+2. Spell animation systems
+3. Complete player input handling
+4. Deck building interface
+5. Hero magic abilities
+6. Multiplayer functionality
+7. Comprehensive testing suite
+
+## Testing Approach
+- Unit tests via TestMoveController
+- Editor-based testing for visual elements
+- Robust error handling and default values
+*/
