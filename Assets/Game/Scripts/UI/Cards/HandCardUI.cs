@@ -1,3 +1,5 @@
+using System;
+using DG.Tweening;
 using Game.Scripts.Data.Saves;
 using Game.Scripts.Data.Static;
 using Game.Scripts.Data.Visual;
@@ -132,6 +134,18 @@ namespace Game.Scripts.UI.Cards
             
             if (_selectionHighlight != null)
                 _selectionHighlight.gameObject.SetActive(selected);
+                
+            // Дополнительные визуальные эффекты при выделении
+            if (selected)
+            {
+                // Увеличиваем карту при выделении
+                transform.localScale = Vector3.one * 1.05f;
+            }
+            else
+            {
+                // Возвращаем к обычному размеру
+                transform.localScale = Vector3.one;
+            }
         }
         
         public void SetMarkedForBurning(bool marked)
@@ -144,6 +158,20 @@ namespace Game.Scripts.UI.Cards
             // Делаем карту менее прозрачной если она помечена для сжигания
             if (_canvasGroup != null)
                 _canvasGroup.alpha = marked ? 0.5f : 1f;
+                
+            // Добавляем эффект исчезновения
+            if (marked)
+            {
+                // Анимация "сжигания"
+                AnimateBurning();
+            }
+        }
+        
+        private void AnimateBurning()
+        {
+            transform.DOKill();
+            transform.DOMoveY(transform.position.y - 10f, 1.5f)
+                .SetEase(Ease.InQuad);
         }
         
         public void SetInteractable(bool interactable)
@@ -151,7 +179,13 @@ namespace Game.Scripts.UI.Cards
             _isInteractable = interactable;
             
             if (_canvasGroup != null)
+            {
                 _canvasGroup.interactable = interactable;
+                _canvasGroup.blocksRaycasts = interactable;
+                
+                // Слегка уменьшаем прозрачность для неактивных карт
+                _canvasGroup.alpha = interactable ? 1f : 0.7f;
+            }
         }
         
         public void OnPointerClick(PointerEventData eventData)
@@ -162,6 +196,7 @@ namespace Game.Scripts.UI.Cards
             // Клик по карте - выбираем для сжигания или показываем детали
             if (eventData.button == PointerEventData.InputButton.Left)
             {
+                // Вызываем событие выбора карты
                 OnCardSelected?.Invoke();
                 Debug.Log($"Selected card: {_cardData.Id}");
             }
@@ -178,16 +213,22 @@ namespace Game.Scripts.UI.Cards
                 return;
                 
             _isDragging = true;
-            //_originalPosition = transform.position;
+            _originalPosition = transform.position;
             _originalParent = transform.parent;
             
-            transform.SetParent(_parentCanvas.transform, true);
-            // Делаем карту полупрозрачной
+            // Делаем карту полупрозрачной при перетаскивании
             if (_canvasGroup != null)
+            {
                 _canvasGroup.alpha = 0.6f;
+                // Позволяем кликам проходить сквозь карту во время перетаскивания
+                _canvasGroup.blocksRaycasts = false;
+            }
                 
             // Поднимаем карту выше других элементов
             transform.SetAsLastSibling();
+            
+            // Немного увеличиваем карту при перетаскивании
+            transform.localScale = Vector3.one * 1.1f;
             
             Debug.Log($"Started dragging card: {_cardData.Id}");
         }
@@ -217,9 +258,15 @@ namespace Game.Scripts.UI.Cards
                 
             _isDragging = false;
             
-            // Возвращаем прозрачность
+            // Восстанавливаем прозрачность
             if (_canvasGroup != null)
+            {
                 _canvasGroup.alpha = 1f;
+                _canvasGroup.blocksRaycasts = true;
+            }
+            
+            // Возвращаем нормальный размер
+            transform.localScale = Vector3.one;
                 
             // Проверяем, попали ли на игровое поле
             var boardPosition = GetBoardPositionFromScreenPoint(eventData.position);
@@ -230,7 +277,7 @@ namespace Game.Scripts.UI.Cards
                 {
                     // Карта успешно размещена - удаляем из руки
                     Debug.Log($"Card {_cardData.Id} successfully placed at {boardPosition.Value}");
-                    Destroy(gameObject);
+                    PlayPlacementAnimation(() => Destroy(gameObject));
                     return;
                 }
                 else
@@ -239,9 +286,41 @@ namespace Game.Scripts.UI.Cards
                 }
             }
             
-            // Возвращаем карту в исходную позицию
-            //transform.position = _originalPosition;
-            transform.SetParent(_originalParent);
+            // Возвращаем карту в исходную позицию с анимацией
+            ReturnToOriginalPosition();
+        }
+
+        private void ReturnToOriginalPosition()
+        {
+            // transform.DOMove(_originalPosition, 0.2f)
+            //     .SetEase(Ease.OutQuad)
+            //     .OnComplete(() =>
+            //     {
+            //         // Если родитель изменился, восстанавливаем
+            //         if (transform.parent != _originalParent)
+            //             transform.SetParent(_originalParent);
+            //     });
+            //     
+            // Если родитель изменился, восстанавливаем
+            if (transform.parent != _originalParent)
+                transform.SetParent(_originalParent);
+                
+            // Альтернатива для DOTween:
+            
+            transform.DOMove(_originalPosition, 0.2f)
+                .SetEase(Ease.OutQuad);
+            
+        }
+        
+        private void PlayPlacementAnimation(Action onComplete)
+        {
+            // Анимация размещения карты
+            // Альтернатива для DOTween:
+            
+            transform.DOMove(transform.position + Vector3.up * 50f, 0.3f)
+                .SetEase(Ease.InBack)
+                .OnComplete(() =>onComplete?.Invoke());
+            
         }
         
         private Vector2Int? GetBoardPositionFromScreenPoint(Vector2 screenPoint)
@@ -258,6 +337,14 @@ namespace Game.Scripts.UI.Cards
         {
             // Здесь можно показать подробную информацию о карте
             Debug.Log($"Showing details for card: {_cardData.Id}, Level: {_cardData.Level}, Mana: {_cardData.GetManaCost()}");
+            
+            // Вариант: увеличить карту и показать детальную информацию
+            // Или открыть отдельное окно с описанием
+        }
+        
+        private void OnDestroy()
+        {
+            DOTween.Kill(transform);
         }
     }
 }

@@ -8,12 +8,14 @@ namespace Game.Scripts.Core
     public class GameBootstrap : MonoBehaviour
     {
         [SerializeField] private GameUI _gameUI;
+        [SerializeField] private GameObject _loadingScreen;
         [SerializeField] private GameStateView _gameStateView;
         
         private GameInitializer _gameInitializer;
         
         private void Start()
         {
+            ShowLoadingScreen(true);
             InitializeGame().Forget();
         }
         
@@ -33,6 +35,7 @@ namespace Game.Scripts.Core
         
         private void OnGameSessionCreated(GameSession gameSession)
         {
+            ShowLoadingScreen(false);
             Debug.Log("Game Bootstrap: GameSession created, connecting to UI...");
             _gameStateView.GameState = gameSession.GetGameState();
             // Если UI найден, связываем его с игровой сессией
@@ -49,6 +52,14 @@ namespace Game.Scripts.Core
             else
             {
                 Debug.LogError("Game Bootstrap: GameUI not found! Game will run without UI.");
+            }
+        }
+        
+        private void ShowLoadingScreen(bool show)
+        {
+            if (_loadingScreen != null)
+            {
+                _loadingScreen.SetActive(show);
             }
         }
         

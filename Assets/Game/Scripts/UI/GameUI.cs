@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Game.Scripts.Core;
 using Game.Scripts.Core.MoveControllers;
 using Game.Scripts.Data.Core.Move;
@@ -24,14 +25,19 @@ namespace Game.Scripts.UI
     [SerializeField] private BoardTile _tilePrefab;
     [SerializeField] private Camera _gameCamera;
     
+    [Header("Preview")]
+    [SerializeField] private GhostUnit _ghostUnitPrefab;
+    
     [Header("Controls")]
     [SerializeField] private Button _endTurnButton;
     [SerializeField] private Button _burnCardButton;
+    [SerializeField] private GameObject _waitingOverlay;
     
     private GameSession _gameSession;
     private PlayerMoveController _playerController;
     private Dictionary<Vector2Int, BoardUnit> _boardUnits = new Dictionary<Vector2Int, BoardUnit>();
     private Dictionary<Vector2Int, BoardTile> _boardTiles = new Dictionary<Vector2Int, BoardTile>();
+    private Dictionary<Vector2Int, GhostUnit> _ghostUnits = new Dictionary<Vector2Int, GhostUnit>();
     private HandCardUI _selectedCardForBurning;
     
     public static GameUI Instance { get; private set; }
@@ -80,6 +86,11 @@ namespace Game.Scripts.UI
     {
       InitializeBoardTiles();
       SetupUI();
+      
+      // По умолчанию UI неактивен, пока не запросят ход
+      SetUIInteractable(false);
+      if (_waitingOverlay != null)
+        _waitingOverlay.SetActive(true);
     }
     
     private void SetupUI()
@@ -93,6 +104,15 @@ namespace Game.Scripts.UI
       {
         _burnCardButton.onClick.AddListener(OnBurnCardClicked);
         _burnCardButton.interactable = false; // Изначально недоступна
+      }
+      
+      // Инициализация _waitingOverlay если его нет
+      if (_waitingOverlay == null)
+      {
+        Debug.LogWarning("GameUI: _waitingOverlay is not assigned. Creating a temporary one.");
+        _waitingOverlay = new GameObject("WaitingOverlay");
+        _waitingOverlay.transform.SetParent(transform);
+        _waitingOverlay.SetActive(false);
       }
     }
     
@@ -158,6 +178,8 @@ namespace Game.Scripts.UI
       
       // Активируем интерфейс для хода игрока
       SetUIInteractable(true);
+      if (_waitingOverlay != null)
+        _waitingOverlay.SetActive(false);
       
       // Показываем подсказку игроку
       ShowPlayerHint("Your turn! Play cards or click End Turn");
@@ -194,6 +216,9 @@ namespace Game.Scripts.UI
       {
         Debug.Log($"GameUI: Successfully queued card {card.Id} for placement at {boardPosition}");
         
+        // Создаем полупрозрачный предпросмотр юнита
+        CreateGhostUnit(card, boardPosition);
+        
         // Обновляем UI для показа запланированного хода
         UpdatePendingMoveDisplay();
         return true;
@@ -204,6 +229,87 @@ namespace Game.Scripts.UI
       }
       
       return false;
+    }
+    
+    public bool CancelCardPlacement(Vector2Int position)
+    {
+      if (_playerController == null || !_ghostUnits.TryGetValue(position, out var ghost))
+        return false;
+      
+      // Находим карту в текущем ходе
+      var currentMove = _playerController.GetCurrentMove();
+      var cardMove = currentMove.Cards.FirstOrDefault(c => c.Line == position.x && c.Row == position.y);
+      
+      if (cardMove != null)
+      {
+        // Запоминаем данные карты перед удалением
+        var cardData = cardMove.Card;
+        
+        // Удаляем карту из хода
+        bool removed = _playerController.TryRemoveCardFromMove(cardData, position.x, position.y);
+        
+        if (removed)
+        {
+          Debug.Log($"GameUI: Cancelled placement of card {cardData.Id} at {position}");
+          
+          // Удаляем призрак с анимацией
+          RemoveGhostUnit(position);
+          
+          // Обновляем UI
+          UpdatePendingMoveDisplay();
+          
+          // Возвращаем карту в руку
+          ReturnCardToHand(cardData);
+          
+          return true;
+        }
+      }
+      
+      return false;
+    }
+    
+    private void CreateGhostUnit(CardLevel card, Vector2Int boardPosition)
+    {
+      // Удалить предыдущий призрак на этой позиции, если он был
+      RemoveGhostUnit(boardPosition);
+      
+      // Создать новый призрак
+      var worldPosition = BoardPositionToWorldPosition(boardPosition, false);
+      var ghostUnit = Instantiate(_ghostUnitPrefab, worldPosition, Quaternion.identity, _boardContainer);
+      ghostUnit.Setup(card, boardPosition, this);
+      
+      // Добавить в словарь для отслеживания
+      _ghostUnits[boardPosition] = ghostUnit;
+    }
+    
+    private void RemoveGhostUnit(Vector2Int boardPosition)
+    {
+      if (_ghostUnits.TryGetValue(boardPosition, out var ghost))
+      {
+        // Удаляем с анимацией
+        ghost.PlayRemoveAnimation();
+        _ghostUnits.Remove(boardPosition);
+      }
+    }
+    
+    private void ClearAllGhostUnits()
+    {
+      foreach (var position in new List<Vector2Int>(_ghostUnits.Keys))
+      {
+        RemoveGhostUnit(position);
+      }
+      
+      _ghostUnits.Clear();
+    }
+    
+    private void ReturnCardToHand(CardLevel card)
+    {
+      // Создать новый UI для карты в руке
+      var cardUI = Instantiate(_cardPrefab, _handContainer);
+      cardUI.Initialize(card);
+      
+      // Настраиваем обработчики событий
+      cardUI.OnCardSelected += () => SelectCardForBurning(cardUI);
     }
     
     public void SelectCardForBurning(HandCardUI cardUI)
@@ -261,8 +367,13 @@ namespace Game.Scripts.UI
       // Завершаем ход игрока
       _playerController.FinishMove();
       
+      // Очищаем все призраки - они больше не нужны, так как ход завершен
+      ClearAllGhostUnits();
+      
       // Деактивируем UI
       SetUIInteractable(false);
+      if (_waitingOverlay != null)
+        _waitingOverlay.SetActive(true);
       
       ShowPlayerHint("Waiting for opponent...");
     }
@@ -352,8 +463,8 @@ namespace Game.Scripts.UI
           boardPosition.y < 0 || boardPosition.y >= 3)
         return false;
         
-      // Проверяем, что на позиции нет юнита
-      if (_boardUnits.ContainsKey(boardPosition))
+      // Проверяем, что на позиции нет юнита и нет призрака
+      if (_boardUnits.ContainsKey(boardPosition) || _ghostUnits.ContainsKey(boardPosition))
         return false;
         
       // Проверяем, что у игрока достаточно маны
@@ -369,6 +480,9 @@ namespace Game.Scripts.UI
     
     private void OnGameStateUpdated(GameState gameState)
     {
+      // При обновлении состояния очищаем все призраки
+      ClearAllGhostUnits();
+      
       var playerCards = gameState.GetMyState().Cards.HandCards;
       UpdateHandDisplay(playerCards);
       UpdateBoardUnits(gameState);
