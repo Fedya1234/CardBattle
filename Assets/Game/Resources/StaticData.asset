@@ -1,0 +1,551 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 584ff6caca6f4a658b1d730766946268, type: 3}
+  m_Name: StaticData
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _units
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.UnitId,
+        Assembly-CSharp],[Game.Scripts.Data.Static.UnitStaticLevelData, Assembly-CSharp]],
+        mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.UnitId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 2|Game.Scripts.Data.Static.UnitStaticLevelData, Assembly-CSharp
+    - Name: DataByLevel
+      Entry: 7
+      Data: 3|Game.Scripts.Data.Static.UnitStaticData[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 4|Game.Scripts.Data.Static.UnitStaticData, Assembly-CSharp
+    - Name: Health
+      Entry: 3
+      Data: 1
+    - Name: Damage
+      Entry: 3
+      Data: 1
+    - Name: Skills
+      Entry: 7
+      Data: 5|Game.Scripts.Data.Enums.SkillId[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 6|Game.Scripts.Data.Static.UnitStaticData, Assembly-CSharp
+    - Name: Health
+      Entry: 3
+      Data: 2
+    - Name: Damage
+      Entry: 3
+      Data: 1
+    - Name: Skills
+      Entry: 7
+      Data: 7|Game.Scripts.Data.Enums.SkillId[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 8|Game.Scripts.Data.Static.UnitStaticData, Assembly-CSharp
+    - Name: Health
+      Entry: 3
+      Data: 2
+    - Name: Damage
+      Entry: 3
+      Data: 2
+    - Name: Skills
+      Entry: 7
+      Data: 9|Game.Scripts.Data.Enums.SkillId[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 7
+      Data: 10|Game.Scripts.Data.Static.UnitStaticLevelData, Assembly-CSharp
+    - Name: DataByLevel
+      Entry: 7
+      Data: 11|Game.Scripts.Data.Static.UnitStaticData[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 12|Game.Scripts.Data.Static.UnitStaticData, Assembly-CSharp
+    - Name: Health
+      Entry: 3
+      Data: 1
+    - Name: Damage
+      Entry: 3
+      Data: 1
+    - Name: Skills
+      Entry: 7
+      Data: 13|Game.Scripts.Data.Enums.SkillId[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 14|Game.Scripts.Data.Static.UnitStaticData, Assembly-CSharp
+    - Name: Health
+      Entry: 3
+      Data: 1
+    - Name: Damage
+      Entry: 3
+      Data: 1
+    - Name: Skills
+      Entry: 7
+      Data: 15|Game.Scripts.Data.Enums.SkillId[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 2
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _cards
+      Entry: 7
+      Data: 16|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.CardId,
+        Assembly-CSharp],[Game.Scripts.Data.Static.CardStaticData, Assembly-CSharp]],
+        mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 17|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.CardId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 7
+      Data: 18|Game.Scripts.Data.Static.CardStaticData, Assembly-CSharp
+    - Name: ManaCost
+      Entry: 3
+      Data: 1
+    - Name: Id
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 19|Game.Scripts.Data.Static.CardStaticData, Assembly-CSharp
+    - Name: ManaCost
+      Entry: 3
+      Data: 2
+    - Name: Id
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 7
+      Data: 20|Game.Scripts.Data.Static.CardStaticData, Assembly-CSharp
+    - Name: ManaCost
+      Entry: 3
+      Data: 1
+    - Name: Id
+      Entry: 3
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _heroes
+      Entry: 7
+      Data: 21|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroId,
+        Assembly-CSharp],[Game.Scripts.Data.Static.HeroData, Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 22|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 23|Game.Scripts.Data.Static.HeroData, Assembly-CSharp
+    - Name: <Health>k__BackingField
+      Entry: 3
+      Data: 50
+    - Name: <Magics>k__BackingField
+      Entry: 7
+      Data: 24|System.Collections.Generic.List`1[[Game.Scripts.Data.Enums.HeroMagicId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 7
+      Data: 25|Game.Scripts.Data.Static.HeroData, Assembly-CSharp
+    - Name: <Health>k__BackingField
+      Entry: 3
+      Data: 50
+    - Name: <Magics>k__BackingField
+      Entry: 7
+      Data: 26|System.Collections.Generic.List`1[[Game.Scripts.Data.Enums.HeroMagicId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 7
+      Data: 27|Game.Scripts.Data.Static.HeroData, Assembly-CSharp
+    - Name: <Health>k__BackingField
+      Entry: 3
+      Data: 100
+    - Name: <Magics>k__BackingField
+      Entry: 7
+      Data: 28|System.Collections.Generic.List`1[[Game.Scripts.Data.Enums.HeroMagicId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _heroMagic
+      Entry: 7
+      Data: 29|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroMagicId,
+        Assembly-CSharp],[Game.Scripts.Data.Static.HeroMagicData, Assembly-CSharp]],
+        mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 30|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroMagicId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 31|Game.Scripts.Data.Static.HeroMagicData, Assembly-CSharp
+    - Name: MaxLevel
+      Entry: 3
+      Data: 3
+    - Name: ManaCost
+      Entry: 3
+      Data: 2
+    - Name: MaxUses
+      Entry: 3
+      Data: 99
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _heroMagicGradeCosts
+      Entry: 7
+      Data: 32|System.Int32[][], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 33|System.Int32[], mscorlib
+    - Name: 
+      Entry: 14
+      Data: 3
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 4
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 34|System.Int32[], mscorlib
+    - Name: 
+      Entry: 14
+      Data: 3
+    - Name: 
+      Entry: 3
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 4
+    - Name: 
+      Entry: 3
+      Data: 7
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  _playerHealthByLevel: 320000003c00000046000000

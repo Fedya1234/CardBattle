@@ -1,0 +1,382 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62fbdf9eb983478e9fd2aa90fd90adac, type: 3}
+  m_Name: VisualStaticData
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    - {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _cards
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.CardId,
+        Assembly-CSharp],[Game.Scripts.Data.Visual.CardVisual, Assembly-CSharp]],
+        mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.CardId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 7
+      Data: 2|Game.Scripts.Data.Visual.UnitCardVisual, Assembly-CSharp
+    - Name: Name
+      Entry: 1
+      Data: U0
+    - Name: Description
+      Entry: 1
+      Data: U1
+    - Name: Icon
+      Entry: 6
+      Data: 
+    - Name: Class
+      Entry: 3
+      Data: 0
+    - Name: Race
+      Entry: 3
+      Data: 0
+    - Name: Rarity
+      Entry: 3
+      Data: 0
+    - Name: Type
+      Entry: 3
+      Data: 0
+    - Name: UnitId
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 3|Game.Scripts.Data.Visual.UnitCardVisual, Assembly-CSharp
+    - Name: Name
+      Entry: 1
+      Data: U_1
+    - Name: Description
+      Entry: 1
+      Data: U1
+    - Name: Icon
+      Entry: 6
+      Data: 
+    - Name: Class
+      Entry: 3
+      Data: 0
+    - Name: Race
+      Entry: 3
+      Data: 0
+    - Name: Rarity
+      Entry: 3
+      Data: 0
+    - Name: Type
+      Entry: 3
+      Data: 0
+    - Name: UnitId
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 7
+      Data: 4|Game.Scripts.Data.Visual.UnitCardVisual, Assembly-CSharp
+    - Name: Name
+      Entry: 1
+      Data: U_2
+    - Name: Description
+      Entry: 1
+      Data: U_1
+    - Name: Icon
+      Entry: 6
+      Data: 
+    - Name: Class
+      Entry: 3
+      Data: 0
+    - Name: Race
+      Entry: 3
+      Data: 0
+    - Name: Rarity
+      Entry: 3
+      Data: 0
+    - Name: Type
+      Entry: 3
+      Data: 0
+    - Name: UnitId
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _units
+      Entry: 7
+      Data: 5|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.UnitId,
+        Assembly-CSharp],[Game.Scripts.Data.Visual.UnitVisual, Assembly-CSharp]],
+        mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 6|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.UnitId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 7|Game.Scripts.Data.Visual.UnitVisual, Assembly-CSharp
+    - Name: Name
+      Entry: 1
+      Data: Unit 1
+    - Name: Description
+      Entry: 1
+      Data: Dest Unit 1
+    - Name: Icon
+      Entry: 6
+      Data: 
+    - Name: Class
+      Entry: 3
+      Data: 0
+    - Name: Race
+      Entry: 3
+      Data: 0
+    - Name: Rarity
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _heroes
+      Entry: 7
+      Data: 8|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroId,
+        Assembly-CSharp],[Game.Scripts.Data.Visual.HeroVisual, Assembly-CSharp]],
+        mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 9|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 10|Game.Scripts.Data.Visual.HeroVisual, Assembly-CSharp
+    - Name: Name
+      Entry: 1
+      Data: Warrior
+    - Name: Description
+      Entry: 1
+      Data: Strong Hero
+    - Name: Icon
+      Entry: 10
+      Data: 0
+    - Name: Class
+      Entry: 3
+      Data: 0
+    - Name: Race
+      Entry: 3
+      Data: 0
+    - Name: Rarity
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 7
+      Data: 11|Game.Scripts.Data.Visual.HeroVisual, Assembly-CSharp
+    - Name: Name
+      Entry: 1
+      Data: Mage
+    - Name: Description
+      Entry: 1
+      Data: Magic Mage
+    - Name: Icon
+      Entry: 10
+      Data: 1
+    - Name: Class
+      Entry: 3
+      Data: 1
+    - Name: Race
+      Entry: 3
+      Data: 1
+    - Name: Rarity
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _heroMagics
+      Entry: 7
+      Data: 12|System.Collections.Generic.Dictionary`2[[Game.Scripts.Data.Enums.HeroMagicId,
+        Assembly-CSharp],[Game.Scripts.Data.Visual.HeroMagicVisual, Assembly-CSharp]],
+        mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 13|System.Collections.Generic.EnumEqualityComparer`1[[Game.Scripts.Data.Enums.HeroMagicId,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 14|Game.Scripts.Data.Visual.HeroMagicVisual, Assembly-CSharp
+    - Name: Name
+      Entry: 1
+      Data: Hero Magic Heal
+    - Name: Description
+      Entry: 1
+      Data: Heal Unit
+    - Name: Icon
+      Entry: 6
+      Data: 
+    - Name: Race
+      Entry: 3
+      Data: 0
+    - Name: Rarity
+      Entry: 3
+      Data: 0
+    - Name: MagicTypeId
+      Entry: 3
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

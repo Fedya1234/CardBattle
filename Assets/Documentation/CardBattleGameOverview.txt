@@ -1,0 +1,94 @@
+Card Battler Game Specification
+
+1. Overview
+   We are building a card battler game (similar to Hearthstone in structure), using a data-driven architecture in Unity. The game should support both single-player and easy future expansion to multiplayer, and is independent of graphics for now.
+
+2. Core Concepts
+   - Each player has a 3x3 battlefield grid (9 cells total). Cards can be placed into these cells.
+   - Two types of cards:
+     * Unit cards – place a unit on the battlefield.
+     * Spell cards – cast buffs on your own units or debuffs on enemy units.
+   - Players take turns simultaneously:
+     1. Each round, both players play cards and press “End Turn”.
+     2. A shared resolution phase begins, where effects and combat play out.
+     3. Players see the opponent’s actions only after both have ended their turn.
+
+3. Card Mechanics
+   - Draft phase each turn:
+     * 4 cards are shown for 20 seconds.
+     * Players can replace any number of these cards.
+     * Replaced cards return to the deck.
+   - Each player has a deck of 30 cards. No reshuffling if the deck is empty.
+   - Players can burn one card per turn to gain +1 mana.
+
+4. Battle Phase
+   Battle resolution happens in this order:
+   1. Positive spell effects (buffs, heals)
+   2. Negative spell effects (damage, debuffs)
+   3. Passive abilities that trigger “At start of turn”
+   4. Combat phase – units fight:
+      - Units attack only enemies in the same horizontal line: Front → Middle → Back.
+      - If all enemy cells in that row are empty → damage is dealt to the enemy hero.
+      - If the hero reaches 0 HP → that player loses.
+
+5. Abilities & Triggers
+   Card effects may trigger:
+   - When played
+   - On unit death
+   - On hero taking damage
+   - When touching other units (adjacent cells)
+   - If more/fewer units than the opponent
+   - Based on mana or hand size
+   - At start/end of turn
+   - If placed in front or back rows
+
+6. Unit Properties (Passive)
+   Some unit cards or spell buffs grant:
+   - Double strike
+   - Vampirism
+   - Anti-magic
+   - First strike
+   - Armor
+
+7. Mana System
+   - Turn 1 starts with 2 mana.
+   - +1 mana per turn (up to max 9).
+   - Hero abilities cost mana (or may be free), and each hero has a unique skill.
+
+8. Hero System
+   - Players choose a hero at the start of the match.
+   - Each hero has:
+     * A unique starting HP value.
+     * A hero ability (unique skill) that costs mana to use (may be once per game or reusable).
+     * A personal Hero Magic pool consisting of three magics (tiers 1–3) that unlock sequentially.
+
+9. Hero Magic
+   - Structure:
+     * Each hero begins with Tier1 magic unlocked.
+     * When a Tier’s magic reaches its maximum level, the next Tier unlocks.
+     * Each hero has exactly three magics: one per Tier.
+   - Experience Requirements:
+     * Tier1 magic requires 1, 2, and 4 XP to reach levels1,2, and3, respectively.
+     * Tier2 magic requires 2, 4, and 7 XP for levels1,2, and3.
+     * Tier3 magic requires 4, 8, and 12 XP for levels1,2, and3.
+   - Casting:
+     * Hero Magic cards are cast similarly to spell cards and consume mana.
+     * Some Hero Magics have a limited use count (e.g., can be cast only once per match or up to N times).
+     * Upon reaching the final level of Tier3, no further XP is gained for Hero Magics.
+   - Effects:
+     * Hero Magics can deal damage, apply buffs/debuffs, heal heroes or units, or trigger other special effects.
+     * Effects and triggers follow the same resolution order as regular spells and abilities.
+
+10. Data-Driven Architecture
+    - All cards, units, spells, and hero data are defined in external data files (JSON, ScriptableObjects, etc.).
+    - New content (cards, heroes, magics) can be added without code changes.
+    - Resolution engine reads definitions at runtime and applies effects according to specified rules.
+
+11. Future Multiplayer Expansion
+    - Turn actions are recorded and synchronized between clients.
+    - Deterministic resolution based on both players’ actions to avoid desyncs.
+
+---
+
+End of Specification
+

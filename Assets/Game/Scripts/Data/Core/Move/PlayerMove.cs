@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
+using Game.Scripts.Data.Saves;
 
 namespace Game.Scripts.Data.Core.Move
 {
     [Serializable]
     public class PlayerMove
     {
-        public List<CardMove> Cards = new ();
+        // Cards being played
+        public List<CardMove> Cards = new();
+        
+        // Card burned for mana (only one allowed per turn as per game rules)
+        public CardLevel BurnedForManaCard;
         
         public void AddCard(CardMove cardMove)
         {
@@ -19,6 +24,15 @@ namespace Game.Scripts.Data.Core.Move
                 return;
             
             Cards.RemoveAt(Cards.Count - 1);
+        }
+        
+        /// <summary>
+        /// Sets a card to be burned for mana
+        /// </summary>
+        /// <param name="card">The card to burn</param>
+        public void BurnCardForMana(CardLevel card)
+        {
+            BurnedForManaCard = card;
         }
     }
 }

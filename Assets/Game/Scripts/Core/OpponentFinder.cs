@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Data.Saves;
+using Game.Scripts.Helpers;
 
 namespace Game.Scripts.Core
 {
@@ -22,7 +23,7 @@ namespace Game.Scripts.Core
 
         private PlayerSave FindOpponent(int level)
         {
-            return new PlayerSave();//Find Bot Or Opponent
+            return SaveService.GetPlayerSave();// new PlayerSave();//Find Bot Or Opponent
         }
         
     }
