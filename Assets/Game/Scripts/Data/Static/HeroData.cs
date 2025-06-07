@@ -16,17 +16,6 @@ namespace Game.Scripts.Data.Static
             Health = health;
         }
         
-        public HeroMagicId GetMagic(int tier)
-        {
-            return tier < Magics.Count ? Magics[tier] : HeroMagicId.Default;
-        }
-
-        public int GetMagicTier(HeroMagicId magicId)
-        {
-            var index = Magics.IndexOf(magicId);
-            return index != -1 ? index : 0;
-        }
-        
         public bool IsHaveMagic(HeroMagicId magicId)
         {
             return Magics.Contains(magicId);

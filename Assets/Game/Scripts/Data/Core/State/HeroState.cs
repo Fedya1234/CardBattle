@@ -12,6 +12,7 @@ namespace Game.Scripts.Data.Core.State
     {
         [SerializeField][ReadOnly] private int _mana;
         [SerializeField][ReadOnly] private int _health;
+        [SerializeField][ReadOnly] private HeroMagicState _magicState;
         public event System.Action<HeroState> EventChanged;
 
         public int Mana
@@ -24,6 +25,12 @@ namespace Game.Scripts.Data.Core.State
         {
             get => _health;
             private set => _health = value;
+        }
+        
+        public HeroMagicState MagicState
+        {
+            get => _magicState;
+            private set => _magicState = value;
         }
 
         public int HeroMagicUseCount { get; set; }
@@ -44,24 +51,19 @@ namespace Game.Scripts.Data.Core.State
                 // Set initial values from hero data
                 Health = heroData.Health;
                 Mana = 0; // Start with 0 mana
+
+                var heroSave = playerSave.GetHeroSave();
+                var heroMagic = heroSave.GetMagicSave();
+                
+                var magicData = StaticDataService.GetHeroMagicData(heroMagic.Id);
+                
+                MagicState = new HeroMagicState(heroMagic.Id, heroMagic.Level, magicData.MaxUses);
             }
             else
             {
                 // Fallback values if data couldn't be loaded
-                Health = 20;
-                Mana = 0;
-                
                 Debug.LogError("Player save is null in HeroState constructor");
             }
-        }
-
-        /// <summary>
-        /// Constructor for creating state changes
-        /// </summary>
-        public HeroState(int mana = 0, int health = 0)
-        {
-            Mana = mana;
-            Health = health;
         }
         
         /// <summary>

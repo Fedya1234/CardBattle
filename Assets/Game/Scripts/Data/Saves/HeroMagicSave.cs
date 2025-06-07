@@ -1,4 +1,5 @@
 using System;
+using Game.Scripts.Data.Enums;
 
 namespace Game.Scripts.Data.Saves
 {
@@ -6,6 +7,6 @@ namespace Game.Scripts.Data.Saves
   public class HeroMagicSave
   {
     public int Level;
-    public int MagicIndex;
+    public HeroMagicId Id;
   }
 }

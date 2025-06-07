@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Scripts.Data.Enums;
 
 namespace Game.Scripts.Data.Saves
@@ -9,8 +10,15 @@ namespace Game.Scripts.Data.Saves
     {
         public HeroId HeroId;
         public int Level;
-        public List<HeroMagicSave> Magics;
         public List<HeroSave> Heroes;
         public List<CardSave> Cards;
+        
+        public HeroSave GetHeroSave() => 
+            GetHeroSave(HeroId);
+
+        public HeroSave GetHeroSave(HeroId heroId)
+        {
+            return Heroes.FirstOrDefault(hero => hero.Id == heroId);
+        }
     }
 }

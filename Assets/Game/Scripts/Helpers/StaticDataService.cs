@@ -19,6 +19,7 @@ namespace Game.Scripts.Helpers
         private static readonly Dictionary<CardId, CardStaticData> _cardDataCache = new Dictionary<CardId, CardStaticData>();
         private static readonly Dictionary<UnitId, UnitStaticData> _unitDataCache = new Dictionary<UnitId, UnitStaticData>();
         private static readonly Dictionary<HeroId, HeroData> _heroDataCache = new Dictionary<HeroId, HeroData>();
+        private static readonly Dictionary<HeroMagicId, HeroMagicData> _heroMagicDataCache = new ();
         
         // Flag to track initialization status
         private static bool _isInitialized;
@@ -166,6 +167,34 @@ namespace Game.Scripts.Helpers
             return heroData.Health;
         }
         
+        #endregion
+        
+        
+        #region Hero Magic Data Methods
+        public static HeroMagicData GetHeroMagicData(HeroMagicId magicId)
+        {
+            Initialize();
+            // Check if we have hero magic data cached
+            if (!_heroMagicDataCache.TryGetValue(magicId, out var heroMagicData))
+            {
+                // Try to get from static data
+                if (_staticData != null)
+                {
+                    heroMagicData = _staticData.GetHeroMagicData(magicId);
+                }
+                
+                if (heroMagicData == null)
+                {
+                    Debug.LogError($"Hero magic data not found for HeroMagicId: {magicId}");
+                    return null;
+                }
+                
+                // Cache it
+                _heroMagicDataCache[magicId] = heroMagicData;
+            }
+            
+            return heroMagicData;
+        }
         #endregion
         
         /// <summary>
